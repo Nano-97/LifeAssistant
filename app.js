@@ -74,6 +74,53 @@ const VISTE = {
   avvisi: { titolo: 'Avvisi', fn: vistaAvvisi }
 };
 
+// ---------- peso ----------
+// Una pesata a settimana, il lunedì appena sveglio (dopo il bagno, prima di mangiare e bere).
+function ultimoPeso() {
+  return ((dati && dati.salute) || []).filter((x) => x.peso > 0).map((x) => ({ ...x, d: data(x.data) })).sort((a, b) => b.d - a.d)[0] || null;
+}
+function pesoDaFare() {
+  const u = ultimoPeso();
+  const ora = new Date();
+  if (u && ora - u.d < 6 * 864e5) return false;
+  return ora.getDay() === 1 || !u || ora - u.d >= 7 * 864e5;
+}
+function formPeso() {
+  const u = ultimoPeso();
+  return `<form class="form-peso" data-form="peso"><input type="text" inputmode="decimal" name="peso" placeholder="${u ? num(u.peso, 1) : '75,0'}" aria-label="Peso in kg" required>
+    <span class="unita">kg</span><button class="primario corto" type="submit">Salva</button></form>
+    <p class="tenue">Una volta a settimana, il lunedì appena sveglio: dopo il bagno, prima di mangiare e bere.</p>`;
+}
+async function salvaPeso(kg) {
+  const ora = new Date();
+  const off = -ora.getTimezoneOffset(), segno = off >= 0 ? '+' : '-';
+  const tz = segno + String(Math.floor(Math.abs(off) / 60)).padStart(2, '0') + String(Math.abs(off) % 60).padStart(2, '0');
+  const corpo = { token: config.token, tipo: 'salute_auto', data: { metrics: [{ name: 'weight_body_mass', units: 'kg',
+    data: [{ date: giorno(ora) + ' ' + ora.toTimeString().slice(0, 8) + ' ' + tz, qty: kg }] }] } };
+  const r = await fetch(config.url, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(corpo) });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.errore || 'non salvato');
+  const oggi = giorno(ora);
+  const riga = dati.salute.find((x) => String(x.data).slice(0, 10) === oggi);
+  if (riga) riga.peso = kg; else dati.salute.push({ data: oggi + 'T00:00:00', peso: kg });
+  salva('dati', dati);
+}
+document.addEventListener('submit', async (e) => {
+  const f = e.target.closest('[data-form="peso"]');
+  if (!f) return;
+  e.preventDefault();
+  const kg = Math.round(parseFloat(f.peso.value.replace(',', '.')) * 10) / 10;
+  if (!(kg > 30 && kg < 250)) { alertaForm(f, 'Scrivi il peso in kg, per esempio 74,5'); return; }
+  const b = f.querySelector('button'); b.disabled = true; b.textContent = '…';
+  try { await salvaPeso(kg); stato = `Peso salvato: ${num(kg, 1)} kg`; } catch (err) { stato = 'Errore: peso non salvato (' + err.message + ')'; }
+  disegna(); window.scrollTo(0, 0);
+});
+function alertaForm(f, testo) {
+  let p = f.querySelector('.errore');
+  if (!p) { p = document.createElement('p'); p.className = 'errore'; f.appendChild(p); }
+  p.textContent = testo;
+}
+
 function vistaOggi() {
   const ora = new Date();
   let h = `<p class="tenue">${GIORNI[ora.getDay()]} ${breve(ora)}</p>`;
@@ -98,6 +145,7 @@ function vistaOggi() {
   h += card('Spese 7 giorni', `<div class="grande">${euro(spese)}</div><div class="tenue">con Apple Pay</div>`);
   h += '</div>';
 
+  if (pesoDaFare()) h += card('Pesati', formPeso());
   const ultimo = (dati.allenamenti || []).map((a) => ({ ...a, d: data(a.data) })).sort((a, b) => b.d - a.d)[0];
   if (ultimo) {
     h += card('Ultimo allenamento', `<strong>${esc(ultimo.tipo)}</strong> · ${breve(ultimo.d)}<br>
@@ -321,6 +369,7 @@ function avvisi() {
   (dati && dati.pagamenti || []).map((x) => ({ ...x, d: data(x.data) })).filter((x) => x.d >= da3)
     .forEach((x) => out.push({ id: 'pag-' + x.data + x.importo, quando: x.d, tipo: '€',
       testo: `Spesa registrata: ${euro(x.importo)} da ${x.esercente || '—'}${x.categoria === 'Da classificare' ? ' (da classificare)' : ''}.`, link: '#finanze' }));
+  if (dati && pesoDaFare()) out.push({ id: 'peso-' + giorno(inizioSettimana(ora)), quando: new Date(giorno(inizioSettimana(ora)) + 'T07:00:00'), tipo: '⚖️', testo: 'È ora di pesarti: inseriscilo da Oggi.', link: '#oggi' });
   const p = dati && dati.piano;
   if (p && p.settimana) out.push({ id: 'piano-' + p.settimana, quando: new Date(p.settimana + 'T00:00:00'), tipo: '📋',
     testo: 'Nuovo piano della settimana: menu, lista spesa e allenamenti aggiornati.', link: '#dieta' });
@@ -357,6 +406,7 @@ function vistaAltro() {
   h += card('Sonno medio 14 gg', `<div class="grande">${media('sonno') ? ore(media('sonno')) : '—'}</div>`);
   h += card('Passi medi 14 gg', `<div class="grande">${num(media('passi'))}</div>`);
   h += card('Peso', peso ? `<div class="grande">${num(peso.peso, 1)} kg</div><div class="tenue">${breve(peso.d)}</div>` : '<div class="tenue">Nessun dato</div>');
+  h += '</div>' + card('Inserisci il peso', formPeso()) + '<div>';
   h += '</div>';
   const casa = (dati.casa || []).map((c) => ({ ...c, d: data(c.prossima_scadenza) })).sort((a, b) => (a.d || 9e15) - (b.d || 9e15));
   h += card('Casa', casa.length ? `<ul class="lista">${casa.map((c) => `<li><span>${esc(c.voce)}<br><span class="tenue">${esc(c.frequenza || '')}</span></span><span class="tenue">${c.d ? breve(c.d) : ''}</span></li>`).join('')}</ul>` : '<p class="tenue">Nessuna voce nella scheda Casa.</p>');
