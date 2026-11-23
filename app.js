@@ -61,6 +61,7 @@ async function carica() {
 const VISTE = {
   oggi: { titolo: 'Oggi', fn: vistaOggi },
   allenamenti: { titolo: 'Allenamenti', fn: vistaAllenamenti },
+  riepilogo: { titolo: 'Riepilogo', fn: vistaRiepilogo, padre: 'allenamenti' },
   dieta: { titolo: 'Dieta e spesa', fn: vistaDieta },
   finanze: { titolo: 'Finanze', fn: vistaFinanze },
   altro: { titolo: 'Altro', fn: vistaAltro },
@@ -102,14 +103,14 @@ function vistaOggi() {
   return h;
 }
 
-function vistaAllenamenti() {
+function vistaRiepilogo() {
   const ora = new Date();
   const c = corse().sort((a, b) => b.d - a.d);
   const da90 = new Date(ora.getTime() - 90 * 864e5);
   const recenti = c.filter((x) => x.d >= da90);
   const lungaRecente = recenti.reduce((m, x) => Math.max(m, x.distanza), 0);
   const lungaTotale = c.reduce((m, x) => (x.distanza > (m ? m.distanza : 0) ? x : m), null);
-  let h = '';
+  let h = '<p><a href="#allenamenti">‹ Schede</a></p>';
 
   const base = lungaRecente || 0;
   h += card('Verso la mezza maratona', `<div class="grande">${num(base, 1)} <span class="tenue">/ ${MEZZA} km</span></div>
@@ -136,6 +137,67 @@ function vistaAllenamenti() {
     : '<p class="tenue">Nessun allenamento.</p>');
   return h;
 }
+
+// ---------- schede di allenamento ----------
+const fattiKey = () => 'fatti-' + giorno(new Date());
+let fatti = leggi(fattiKey()) || {};
+let apertaScheda = null;
+
+function schedaHtml(id, aperta) {
+  const s = PROGRAMMA.schede[id];
+  if (!s) return '';
+  const meta = [s.dove, s.durata].filter(Boolean).join(' · ');
+  let corpo = s.intro ? `<p class="tenue">${esc(s.intro)}</p>` : '';
+  if (s.riscaldamento) corpo += `<p class="tenue">Prima: <a href="#allenamenti" data-apri="RISCALDAMENTO">riscaldamento spalla</a> (10 min).</p>`;
+  if (s.esercizi.length) {
+    corpo += '<ul class="esercizi">' + s.esercizi.map((e, i) => {
+      const n = e.serie || s.giri || 1;
+      const pallini = Array.from({ length: n }, (_, k) => {
+        const kk = id + '.' + i + '.' + k;
+        return `<button class="pallino${fatti[kk] ? ' fatto' : ''}" data-serie="${kk}" aria-label="${esc(e.nome)} serie ${k + 1}">${k + 1}</button>`;
+      }).join('');
+      return `<li><div class="es-testa"><strong>${esc(e.nome)}</strong><span class="rip">${e.serie ? e.serie + ' × ' : ''}${esc(e.rip)}</span></div>
+        ${e.nota ? `<div class="tenue">${esc(e.nota)}</div>` : ''}<div class="pallini">${pallini}</div></li>`;
+    }).join('') + '</ul>';
+    if (s.giri) corpo += `<p class="tenue">I pallini sono i ${s.giri} giri.</p>`;
+  }
+  return `<details class="card scheda" data-id="${id}"${aperta ? ' open' : ''}><summary><span><strong>${esc(s.nome)}</strong><br><span class="tenue">${esc(meta)}</span></span><span class="freccia">›</span></summary>${corpo}</details>`;
+}
+
+function vistaAllenamenti() {
+  const ora = new Date();
+  const oggiId = PROGRAMMA.settimana[ora.getDay()];
+  let h = '';
+  h += `<p class="tenue">Oggi, ${GIORNI[ora.getDay()]}</p>`;
+  h += schedaHtml(oggiId, apertaScheda ? apertaScheda === oggiId : true);
+  if (PROGRAMMA.schede[oggiId].riscaldamento) h += schedaHtml('RISCALDAMENTO', apertaScheda === 'RISCALDAMENTO');
+
+  h += '<h3 class="sezione">Tutte le schede</h3>';
+  ['A', 'B', 'C', 'CORSA', 'RISCALDAMENTO'].filter((id) => id !== oggiId && !(id === 'RISCALDAMENTO' && PROGRAMMA.schede[oggiId].riscaldamento))
+    .forEach((id) => { h += schedaHtml(id, apertaScheda === id); });
+
+  const ordine = [1, 2, 3, 4, 5, 6, 0];
+  h += card('La settimana', `<ul class="lista">${ordine.map((g) => { const s = PROGRAMMA.schede[PROGRAMMA.settimana[g]];
+    return `<li${g === ora.getDay() ? ' class="oggi"' : ''}><span>${GIORNI[g]}</span><span>${esc(s.nome.replace(/^Seduta /, ''))}</span></li>`; }).join('')}</ul>`);
+  h += card('Progressione', `<ul class="lista">${PROGRAMMA.progressione.map(([a, b]) => `<li><span><strong>${esc(a)}</strong>: ${esc(b)}</span></li>`).join('')}</ul>
+    <p class="tenue">${esc(PROGRAMMA.nota)}</p>`);
+  h += `<a class="card link-card" href="#riepilogo"><span><strong>Riepilogo e storico</strong><br><span class="tenue">Mezza maratona, km a settimana, allenamenti passati</span></span><span class="freccia">›</span></a>`;
+  return h;
+}
+
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-serie]');
+  if (b) {
+    if (leggi('fatti-giorno') !== giorno(new Date())) { fatti = {}; salva('fatti-giorno', giorno(new Date())); }
+    const k = b.dataset.serie;
+    if (fatti[k]) delete fatti[k]; else fatti[k] = 1;
+    salva(fattiKey(), fatti);
+    b.classList.toggle('fatto', !!fatti[k]);
+    return;
+  }
+  const a = e.target.closest('[data-apri]');
+  if (a) { e.preventDefault(); apertaScheda = a.dataset.apri; disegna(); const el = document.querySelector(`[data-id="${apertaScheda}"]`); if (el) el.scrollIntoView({ behavior: 'smooth' }); }
+});
 
 function vistaDieta() {
   let h = '';
@@ -206,10 +268,11 @@ function disegna() {
   if (!config.url || !config.token) v = 'impostazioni';
   if (!VISTE[v]) v = 'oggi';
   $('#titolo').textContent = VISTE[v].titolo;
-  document.querySelectorAll('.barra a').forEach((a) => a.classList.toggle('attivo', a.dataset.v === v));
+  const sez = VISTE[v].padre || v;
+  document.querySelectorAll('.barra a').forEach((a) => a.classList.toggle('attivo', a.dataset.v === sez));
   let h = stato ? `<p class="${stato.startsWith('Errore') ? 'errore' : 'tenue'}">${esc(stato)}</p>` : '';
   if (v === 'impostazioni') h += vistaImpostazioni();
-  else if (!dati) h += '<p class="tenue">Carico i dati…</p>';
+  else if (!dati && v !== 'allenamenti') h += '<p class="tenue">Carico i dati…</p>';
   else h += VISTE[v].fn();
   $('#vista').innerHTML = h;
   const f = $('#form-config');

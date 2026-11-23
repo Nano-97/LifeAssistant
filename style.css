@@ -41,3 +41,19 @@ form label { display: block; margin: 12px 0 4px; font-weight: 600; }
 input { width: 100%; padding: 12px; font-size: 1rem; border-radius: 10px; border: 1px solid var(--bordo); background: var(--bg); color: var(--testo); }
 button.primario { margin-top: 16px; width: 100%; padding: 14px; font-size: 1rem; font-weight: 600; border: 0; border-radius: 12px; background: var(--accento); color: #fff; }
 .errore { color: #dc2626; }
+.sezione { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--tenue); margin: 20px 0 8px; }
+details.scheda > summary { list-style: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+details.scheda > summary::-webkit-details-marker { display: none; }
+.freccia { color: var(--tenue); font-size: 1.4rem; transition: transform .2s; }
+details[open] > summary .freccia { transform: rotate(90deg); }
+details.scheda[open] > summary { margin-bottom: 8px; }
+.esercizi { list-style: none; margin: 0; padding: 0; }
+.esercizi li { padding: 12px 0; border-top: 1px solid var(--bordo); }
+.es-testa { display: flex; justify-content: space-between; gap: 12px; }
+.rip { white-space: nowrap; color: var(--accento); font-weight: 600; }
+.pallini { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+.pallino { width: 40px; height: 40px; border-radius: 20px; border: 2px solid var(--accento); background: transparent; color: var(--accento); font-weight: 600; font-size: .95rem; }
+.pallino.fatto { background: var(--accento); color: var(--card); }
+.lista li.oggi { color: var(--accento); font-weight: 600; }
+.link-card { display: flex; justify-content: space-between; align-items: center; color: var(--testo); text-decoration: none; }
+a { color: var(--accento); }
