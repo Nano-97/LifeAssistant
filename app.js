@@ -282,11 +282,11 @@ function vistaDieta() {
   const g = m.giorni[ora.getDay()] || {};
   const r = m.ricette[g.cena];
   const rc = m.ricette[g.colazione];
-  const sp = m.spuntini || [];
+  const sp = g.spuntino ? [g.spuntino] : (m.spuntini || []);
   let h = card('Oggi si mangia', `<ul class="lista">
       ${rc ? `<li style="display:block"><span class="tenue">Colazione</span><br><strong>${esc(rc.nome)}</strong><details class="ricetta"><summary>Come si fa</summary>${ricettaHtml(rc)}</details></li>` : ''}
       <li style="display:block"><span class="tenue">Pranzo</span><br><strong>${esc(m.ricette[g.pranzo] ? m.ricette[g.pranzo].nome : (g.pranzo || '—'))}</strong>${g.pranzo === 'Mensa' ? '<br><span class="tenue">Un secondo con verdura, più un primo piccolo o il pane; frutta come dessert.</span>' : ''}</li>
-      ${sp.length ? `<li style="display:block"><span class="tenue">Spuntini (1-2)</span><br>${sp.map(esc).join(' · ')}</li>` : ''}
+      ${sp.length ? `<li style="display:block"><span class="tenue">Spuntino</span><br>${sp.map(esc).join(' · ')}</li>` : ''}
     </ul>`);
   h += card('La cena di stasera', r ? ricettaHtml(r) : '<p class="tenue">Nessuna cena in programma.</p>');
 
@@ -295,7 +295,7 @@ function vistaDieta() {
   h += `<details class="card scheda"><summary><span><strong>Menu completo della settimana</strong></span><span class="freccia">›</span></summary>
     <ul class="lista">${ordine.map((d) => { const x = m.giorni[d] || {};
       return `<li class="${d === ora.getDay() ? 'oggi' : ''}" style="display:block"><strong>${GIORNI[d]}</strong><br>
-        ${x.colazione ? `<span class="tenue">Colazione:</span> ${esc(nomePiatto(x.colazione))}<br>` : ''}<span class="tenue">Pranzo:</span> ${esc(nomePiatto(x.pranzo))}<br><span class="tenue">Cena:</span> ${esc(nomePiatto(x.cena))}
+        ${x.colazione ? `<span class="tenue">Colazione:</span> ${esc(nomePiatto(x.colazione))}<br>` : ''}<span class="tenue">Pranzo:</span> ${esc(nomePiatto(x.pranzo))}<br>${x.spuntino ? `<span class="tenue">Spuntino:</span> ${esc(x.spuntino)}<br>` : ''}<span class="tenue">Cena:</span> ${esc(nomePiatto(x.cena))}
         ${m.ricette[x.cena] && m.ricette[x.cena].passi.length > 1 ? `<details class="ricetta"><summary>Ricetta</summary>${ricettaHtml(m.ricette[x.cena])}</details>` : ''}
         ${m.ricette[x.colazione] ? `<details class="ricetta"><summary>Ricetta della colazione</summary>${ricettaHtml(m.ricette[x.colazione])}</details>` : ''}
         ${m.ricette[x.pranzo] ? `<details class="ricetta"><summary>Ricetta del pranzo</summary>${ricettaHtml(m.ricette[x.pranzo])}</details>` : ''}</li>`; }).join('')}</ul></details>`;

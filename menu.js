@@ -4,32 +4,29 @@ const MENU = {
   settimana: '2026-11-23',
   // 1 = lunedì ... 0 = domenica
   giorni: {
-    1: { colazione: 'col-yogurt', pranzo: 'Mensa', cena: 'salmone' },
-    2: { colazione: 'col-uova', pranzo: 'Mensa', cena: 'frittata' },
-    3: { colazione: 'col-porridge', pranzo: 'Mensa', cena: 'zuppa' },
-    4: { colazione: 'col-yogurt', pranzo: 'Mensa', cena: 'merluzzo' },
-    5: { colazione: 'col-uova', pranzo: 'Mensa', cena: 'libero' },
-    6: { colazione: 'col-porridge', pranzo: 'pasta-broccoli', cena: 'burger' },
-    0: { colazione: 'col-yogurt', pranzo: 'risotto', cena: 'piadina' }
+    1: { colazione: 'col-lun', pranzo: 'Mensa', spuntino: "Banana e mandorle, prima dell'allenamento", cena: 'salmone' },
+    2: { colazione: 'col-mar', pranzo: 'Mensa', spuntino: 'Yogurt greco con miele', cena: 'frittata' },
+    3: { colazione: 'col-mer', pranzo: 'Mensa', spuntino: 'Pane integrale con hummus', cena: 'zuppa' },
+    4: { colazione: 'col-gio', pranzo: 'Mensa', spuntino: 'Mandarini e noci', cena: 'merluzzo' },
+    5: { colazione: 'col-ven', pranzo: 'Mensa', spuntino: "Banana con un cucchiaio di burro d'arachidi", cena: 'libero' },
+    6: { colazione: 'col-sab', pranzo: 'pasta-broccoli', spuntino: 'Yogurt greco con frutta', cena: 'burger' },
+    0: { colazione: 'col-dom', pranzo: 'risotto', spuntino: 'Mela e mandorle', cena: 'piadina' }
   },
-  // 1-2 al giorno, anche da portare al lavoro.
-  spuntini: ['Un frutto e una manciata di mandorle', 'Yogurt greco', 'Pane integrale con hummus'],
   ricette: {
-    'col-yogurt': {
-      nome: 'Yogurt greco con avena, frutta e noci', tempo: '3 min',
-      ingredienti: ['170 g di yogurt greco', '3 cucchiai di fiocchi d\'avena', '1 frutto a pezzi (banana o mela)', 'Una manciata di noci'],
-      passi: ['Metti tutto in una ciotola e mescola.']
-    },
-    'col-uova': {
-      nome: 'Pane integrale con uova strapazzate e un frutto', tempo: '8 min',
-      ingredienti: ['2 uova', '2 fette di pane integrale', '1 frutto', 'Sale, un filo d\'olio'],
-      passi: ['Tosta il pane.', 'Strapazza le uova in padella a fuoco basso per 2-3 minuti, sala.', 'Servi sul pane, con il frutto a parte.']
-    },
-    'col-porridge': {
-      nome: 'Porridge d\'avena col latte, banana e burro d\'arachidi', tempo: '6 min',
-      ingredienti: ['50 g di fiocchi d\'avena', '250 ml di latte', '1 banana', '1 cucchiaio di burro d\'arachidi'],
-      passi: ['Cuoci avena e latte a fuoco medio per 4-5 minuti, mescolando.', 'Aggiungi la banana a rondelle e il burro d\'arachidi.']
-    },
+    'col-lun': { nome: 'Yogurt greco con avena, banana e noci', tempo: '3 min',
+      ingredienti: ['170 g di yogurt greco', "3 cucchiai di fiocchi d'avena", '1 banana', 'Una manciata di noci'], passi: ['Metti tutto in una ciotola e mescola.'] },
+    'col-mar': { nome: 'Pane integrale tostato, 2 uova strapazzate, mandarini', tempo: '8 min',
+      ingredienti: ['2 uova', '2 fette di pane integrale', '2 mandarini'], passi: ['Tosta il pane.', 'Strapazza le uova in padella a fuoco basso per 2-3 minuti, sala.'] },
+    'col-mer': { nome: "Porridge d'avena col latte, banana e burro d'arachidi", tempo: '6 min',
+      ingredienti: ["50 g di fiocchi d'avena", '250 ml di latte', '1 banana', "1 cucchiaio di burro d'arachidi"], passi: ['Cuoci avena e latte a fuoco medio per 4-5 minuti, mescolando.', "Aggiungi la banana a rondelle e il burro d'arachidi."] },
+    'col-gio': { nome: 'Yogurt greco con avena, mela e mandorle', tempo: '3 min',
+      ingredienti: ['170 g di yogurt greco', "3 cucchiai di fiocchi d'avena", '1 mela a pezzi', 'Una manciata di mandorle'], passi: ['Metti tutto in una ciotola e mescola.'] },
+    'col-ven': { nome: 'Pane integrale tostato con ricotta e miele, un frutto', tempo: '4 min',
+      ingredienti: ['2 fette di pane integrale', '80 g di ricotta', '1 cucchiaino di miele', '1 frutto'], passi: ['Tosta il pane, spalma la ricotta e un filo di miele.'] },
+    'col-sab': { nome: "Porridge d'avena col latte, mela e cannella", tempo: '6 min',
+      ingredienti: ["50 g di fiocchi d'avena", '250 ml di latte', '1 mela a cubetti', 'Cannella'], passi: ['Cuoci avena, latte e mela a fuoco medio per 5 minuti, mescolando.', 'Spolvera di cannella.'] },
+    'col-dom': { nome: "2 uova strapazzate, pane integrale, spremuta d'arancia", tempo: '10 min',
+      ingredienti: ['2 uova', '2 fette di pane integrale', '2-3 arance'], passi: ['Spremi le arance.', 'Strapazza le uova a fuoco basso 2-3 minuti e servi con il pane tostato.'] },
     salmone: {
       nome: 'Salmone al forno, patate e zucchine', tempo: '25 min',
       ingredienti: ['1 trancio di salmone (150 g)', '150 g di patate', '1 zucchina', 'Olio, sale, limone, rosmarino'],
@@ -75,14 +72,14 @@ const MENU = {
   },
   // Reparti nell'ordine predefinito: l'ordine dei corridoi lo sistemi dall'app.
   spesa: [
-    { reparto: 'Frutta e verdura', voci: ['Banane (5)', 'Mele (4)', 'Mandarini (1 kg)', 'Rucola (1 busta)', 'Insalata mista (2 buste)', 'Pomodorini (250 g)', 'Zucchine (2)', 'Broccoli (600 g)', 'Zucca (400 g)', 'Patate (300 g)', 'Patate dolci (2)', 'Carote (4)', 'Cipolle (2)', 'Sedano', 'Aglio', 'Limone'] },
+    { reparto: 'Frutta e verdura', voci: ['Banane (5)', 'Mele (4)', 'Mandarini (1 kg)', "Arance da spremuta (3)", 'Rucola (1 busta)', 'Insalata mista (2 buste)', 'Pomodorini (250 g)', 'Zucchine (2)', 'Broccoli (600 g)', 'Zucca (400 g)', 'Patate (300 g)', 'Patate dolci (2)', 'Carote (4)', 'Cipolle (2)', 'Sedano', 'Aglio', 'Limone'] },
     { reparto: 'Pane e forno', voci: ['Pane integrale', 'Piadine (1 confezione)'] },
     { reparto: 'Carne e salumi', voci: ['Macinato di manzo (150 g)', 'Bresaola (80 g)'] },
     { reparto: 'Pesce', voci: ['Salmone (1 trancio, 150 g)'] },
-    { reparto: 'Latticini e uova', voci: ['Uova (10)', 'Yogurt greco bianco (1 kg)', 'Latte (1 l)', 'Ricotta (250 g)', 'Grana (150 g)'] },
+    { reparto: 'Latticini e uova', voci: ['Uova (10)', 'Yogurt greco bianco (1 kg)', 'Latte (1 l)', 'Ricotta (350 g)', 'Grana (150 g)'] },
     { reparto: 'Pasta, riso e cereali', voci: ['Riso da risotto (500 g)', 'Pasta integrale (500 g)', 'Cous cous (500 g)', 'Fiocchi d\'avena (500 g)'] },
     { reparto: 'Legumi e conserve', voci: ['Lenticchie rosse secche (500 g)', 'Acciughe sott\'olio', 'Olive', 'Hummus'] },
-    { reparto: 'Colazione e frutta secca', voci: ['Burro d\'arachidi', 'Mandorle e noci (200 g)'] },
+    { reparto: 'Colazione e frutta secca', voci: ['Burro d\'arachidi', 'Mandorle e noci (200 g)', 'Miele', 'Cannella'] },
     { reparto: 'Olio, condimenti e brodo', voci: ['Pangrattato', 'Olio extravergine (se finito)', 'Brodo vegetale (se finito)'] },
     { reparto: 'Surgelati', voci: ['Filetti di merluzzo (200 g)', 'Spinaci (300 g)'] }
   ]
