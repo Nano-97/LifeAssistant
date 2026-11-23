@@ -23,8 +23,8 @@ const MENU = {
       ingredienti: ['170 g di yogurt greco', "3 cucchiai di fiocchi d'avena", '1 mela a pezzi', 'Una manciata di mandorle'], passi: ['Metti tutto in una ciotola e mescola.'] },
     'col-ven': { nome: 'Pane integrale tostato con ricotta e miele, un frutto', tempo: '4 min',
       ingredienti: ['2 fette di pane integrale', '80 g di ricotta', '1 cucchiaino di miele', '1 frutto'], passi: ['Tosta il pane, spalma la ricotta e un filo di miele.'] },
-    'col-sab': { nome: "Porridge d'avena col latte, mela e cannella", tempo: '6 min',
-      ingredienti: ["50 g di fiocchi d'avena", '250 ml di latte', '1 mela a cubetti', 'Cannella'], passi: ['Cuoci avena, latte e mela a fuoco medio per 5 minuti, mescolando.', 'Spolvera di cannella.'] },
+    'col-sab': { nome: "Porridge d'avena col latte, mela a pezzetti e noci", tempo: '6 min',
+      ingredienti: ["50 g di fiocchi d'avena", '250 ml di latte', '1 mela a pezzetti', 'Una manciata di noci'], passi: ['Cuoci avena, latte e mela a fuoco medio per 5 minuti, mescolando.', 'Completa con le noci.'] },
     'col-dom': { nome: "2 uova strapazzate, pane integrale, spremuta d'arancia", tempo: '10 min',
       ingredienti: ['2 uova', '2 fette di pane integrale', '2-3 arance'], passi: ['Spremi le arance.', 'Strapazza le uova a fuoco basso 2-3 minuti e servi con il pane tostato.'] },
     salmone: {
@@ -79,7 +79,7 @@ const MENU = {
     { reparto: 'Latticini e uova', voci: ['Uova (10)', 'Yogurt greco bianco (1 kg)', 'Latte (1 l)', 'Ricotta (350 g)', 'Grana (150 g)'] },
     { reparto: 'Pasta, riso e cereali', voci: ['Riso da risotto (500 g)', 'Pasta integrale (500 g)', 'Cous cous (500 g)', 'Fiocchi d\'avena (500 g)'] },
     { reparto: 'Legumi e conserve', voci: ['Lenticchie rosse secche (500 g)', 'Acciughe sott\'olio', 'Olive', 'Hummus'] },
-    { reparto: 'Colazione e frutta secca', voci: ['Burro d\'arachidi', 'Mandorle e noci (200 g)', 'Miele', 'Cannella'] },
+    { reparto: 'Colazione e frutta secca', voci: ['Burro d\'arachidi', 'Mandorle e noci (200 g)', 'Miele'] },
     { reparto: 'Olio, condimenti e brodo', voci: ['Pangrattato', 'Olio extravergine (se finito)', 'Brodo vegetale (se finito)'] },
     { reparto: 'Surgelati', voci: ['Filetti di merluzzo (200 g)', 'Spinaci (300 g)'] }
   ]
