@@ -330,7 +330,7 @@ document.addEventListener('change', (e) => {
   disegna();
 });
 document.addEventListener('click', (e) => {
-  const b = e.target.closest('[data-azione],[data-su],[data-giu]');
+  const b = e.target.closest('[data-azione="reparti"],[data-azione="azzera"],[data-su],[data-giu]');
   if (!b) return;
   if (b.dataset.azione === 'reparti') { modificaReparti = !modificaReparti; }
   else if (b.dataset.azione === 'azzera') { spunte = {}; salva(spuntaKey(), spunte); }
@@ -419,6 +419,7 @@ function vistaAltro() {
   h += '</div>';
   const casa = (dati.casa || []).map((c) => ({ ...c, d: data(c.prossima_scadenza) })).sort((a, b) => (a.d || 9e15) - (b.d || 9e15));
   h += card('Casa', casa.length ? `<ul class="lista">${casa.map((c) => `<li><span>${esc(c.voce)}<br><span class="tenue">${esc(c.frequenza || '')}</span></span><span class="tenue">${c.d ? breve(c.d) : ''}</span></li>`).join('')}</ul>` : '<p class="tenue">Nessuna voce nella scheda Casa.</p>');
+  h += card('Notifiche', statoNotifiche());
   h += card('App', `<p class="tenue">Dati aggiornati al ${dati.aggiornato ? breve(data(dati.aggiornato)) + ' ' + dati.aggiornato.slice(11, 16) : '—'}.</p>
     <a href="#impostazioni">Impostazioni</a>`);
   return h;
@@ -430,10 +431,56 @@ function vistaImpostazioni() {
       <input id="url" type="url" required placeholder="https://script.google.com/macros/s/…/exec" value="${esc(config.url || '')}">
       <label for="token">Token</label>
       <input id="token" type="password" required autocomplete="off" value="${esc(config.token || '')}">
+      <label for="push">Servizio notifiche (…workers.dev)</label>
+      <input id="push" type="url" placeholder="https://assistente-push.….workers.dev" value="${esc(config.push || '')}">
       <button class="primario" type="submit">Salva e collega</button>
     </form>
     <p class="tenue">Restano salvati solo su questo dispositivo.</p>`);
 }
+
+// ---------- notifiche push ----------
+function statoNotifiche() {
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+    return `<p class="tenue">${standalone ? 'Questo dispositivo non supporta le notifiche push (serve iOS 16.4 o successivo).' : "Apri l'app dall'icona sulla schermata Home: su iPhone le notifiche funzionano solo da lì."}</p>`;
+  }
+  if (!config.push) return '<p class="tenue">Manca l\'indirizzo del servizio notifiche: aggiungilo in <a href="#impostazioni">Impostazioni</a>.</p>';
+  const perm = Notification.permission;
+  if (perm === 'denied') return '<p class="tenue">Notifiche bloccate: riattivale da Impostazioni iPhone > Notifiche > Assistente.</p>';
+  const attive = perm === 'granted' && leggi('push-attive');
+  return `<p class="tenue">${attive ? 'Attive su questo telefono: spese, allenamento delle 18, pesata del lunedì, piano della domenica, scadenze di casa.' : 'Ricevi spese, promemoria allenamento, pesata, piano della domenica e scadenze anche ad app chiusa.'}</p>
+    <button class="primario" data-azione="push">${attive ? 'Invia una notifica di prova' : 'Attiva notifiche'}</button>`;
+}
+
+async function attivaPush() {
+  const perm = await Notification.requestPermission();
+  if (perm !== 'granted') throw new Error('permesso negato');
+  const reg = await navigator.serviceWorker.ready;
+  const k = await fetch(config.push + '/vapid').then((r) => r.json());
+  const chiave = Uint8Array.from(atob(k.publicKey.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((k.publicKey.length + 3) % 4)), (c) => c.charCodeAt(0));
+  let sub = await reg.pushManager.getSubscription();
+  if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: chiave });
+  const r = await fetch(config.push + '/subscribe', { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ token: config.token, subscription: sub.toJSON() }) }).then((x) => x.json());
+  if (!r.ok) throw new Error(r.errore || 'iscrizione non riuscita');
+  salva('push-attive', true);
+}
+
+async function provaPush() {
+  const r = await fetch(config.push + '/send', { method: 'POST', headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ token: config.token, title: 'Prova', body: 'Le notifiche funzionano.', url: location.href.split('#')[0] + '#altro' }) }).then((x) => x.json());
+  if (!r.ok) throw new Error(r.errore || 'invio non riuscito');
+}
+
+document.addEventListener('click', async (e) => {
+  const b = e.target.closest('[data-azione="push"]');
+  if (!b) return;
+  b.disabled = true;
+  try {
+    if (Notification.permission === 'granted' && leggi('push-attive')) { await provaPush(); stato = 'Notifica di prova inviata.'; }
+    else { await attivaPush(); stato = 'Notifiche attivate.'; }
+  } catch (err) { stato = 'Errore notifiche: ' + err.message; }
+  disegna();
+});
 
 // ---------- disegno e navigazione ----------
 function disegna() {
@@ -452,7 +499,7 @@ function disegna() {
   const f = $('#form-config');
   if (f) f.addEventListener('submit', (e) => {
     e.preventDefault();
-    config = { url: $('#url').value.trim(), token: $('#token').value.trim() };
+    config = { url: $('#url').value.trim(), token: $('#token').value.trim(), push: $('#push').value.trim().replace(/\/+$/, '') };
     salva('config', config);
     location.hash = '#oggi';
     carica();

@@ -342,19 +342,20 @@ function pianoSettimana() {
   try { return JSON.parse(ultimo.getBlob().getDataAsString()); } catch (err) { return null; }
 }
 
-// ---------- Notifiche push (app ntfy) ----------
-// Script property NTFY_TOPIC = nome segreto del canale (lo stesso a cui sei iscritto nell'app ntfy).
+// ---------- Notifiche push (servizio Cloudflare dell'app) ----------
+// Script property PUSH_URL = indirizzo del Worker (https://assistente-push.<tuo-nome>.workers.dev).
 // Lancia UNA volta installaNotifiche() dall'editor per attivare i promemoria a orario.
 const APP_URL = 'https://nano-97.github.io/LifeAssistant/';
 const ALLENAMENTO_DEL_GIORNO = { 1: 'Seduta A: spinta, core e gambe (50 min)', 2: 'Corsa facile (20-30 min)', 3: 'Seduta B: tirata e arrampicata (50 min)', 5: 'Seduta C: circuito dinamico (45 min)' };
 
 function notifica(titolo, testo, sezione) {
-  const topic = PropertiesService.getScriptProperties().getProperty('NTFY_TOPIC');
-  if (!topic) return;
+  const prop = PropertiesService.getScriptProperties();
+  const push = prop.getProperty('PUSH_URL');
+  if (!push) return;
   try {
-    UrlFetchApp.fetch('https://ntfy.sh/', {
+    UrlFetchApp.fetch(push.replace(/\/+$/, '') + '/send', {
       method: 'post', contentType: 'application/json', muteHttpExceptions: true,
-      payload: JSON.stringify({ topic: topic, title: titolo, message: testo, click: APP_URL + (sezione ? '#' + sezione : ''), tags: ['assistente'] })
+      payload: JSON.stringify({ token: prop.getProperty('TOKEN'), title: titolo, body: testo, url: APP_URL + (sezione ? '#' + sezione : '') })
     });
   } catch (err) { /* una notifica persa non deve bloccare il salvataggio */ }
 }
