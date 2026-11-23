@@ -80,3 +80,6 @@ a.icona { display: inline-flex; align-items: center; justify-content: center; te
 .avviso-riga { display: flex; gap: 12px; color: var(--testo); text-decoration: none; width: 100%; }
 .avviso-icona { font-size: 1.3rem; width: 28px; text-align: center; }
 .lista li.nuovo { font-weight: 600; }
+html { touch-action: manipulation; -webkit-text-size-adjust: 100%; }
+.icona.gira { animation: gira 1s linear infinite; }
+@keyframes gira { to { transform: rotate(360deg); } }

@@ -44,7 +44,7 @@ function pianoDi(d) {
 // ---------- caricamento ----------
 async function carica() {
   if (!config.url || !config.token) return;
-  stato = 'Aggiorno…'; disegna();
+  $('#aggiorna').classList.add('gira');
   try {
     const u = config.url + (config.url.includes('?') ? '&' : '?') + 'tipo=dati&token=' + encodeURIComponent(config.token);
     const r = await fetch(u, { redirect: 'follow' });
@@ -54,7 +54,12 @@ async function carica() {
   } catch (e) {
     stato = dati ? 'Offline: mostro i dati del ' + breve(data(dati.aggiornato)) : 'Errore: ' + e.message;
   }
+  $('#aggiorna').classList.remove('gira');
+  // ridisegna senza far saltare la pagina (e senza chiudere le schede aperte, se non è cambiato niente)
+  const y = window.scrollY; const prima = $('#vista').innerHTML;
   disegna();
+  if ($('#vista').innerHTML === prima) return;
+  window.scrollTo(0, y);
 }
 
 // ---------- viste ----------
@@ -400,7 +405,17 @@ $('#aggiorna').addEventListener('click', carica);
 document.addEventListener('visibilitychange', () => {
   if (document.visibilityState === 'visible' && dati && Date.now() - data(dati.aggiornato) > 15 * 60e3) carica();
 });
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+// Aggiornamenti dell'app: controlla una nuova versione a ogni apertura e ricarica da sola appena è pronta.
+if ('serviceWorker' in navigator) {
+  let ricaricata = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => { if (!ricaricata) { ricaricata = true; location.reload(); } });
+  navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).then((reg) => {
+    document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
+  }).catch(() => {});
+}
+// Niente zoom: pizzico e doppio tocco disattivati (Safari ignora user-scalable=no).
+document.addEventListener('gesturestart', (e) => e.preventDefault());
+document.addEventListener('touchmove', (e) => { if (e.scale && e.scale !== 1) e.preventDefault(); }, { passive: false });
 
 disegna();
 carica();
