@@ -73,10 +73,11 @@ function vistaOggi() {
   let h = `<p class="tenue">${GIORNI[ora.getDay()]} ${breve(ora)}</p>`;
 
   const p = pianoDi(ora);
-  h += card('Il piano di oggi', p
-    ? `<ul class="lista"><li><span>Allenamento</span><strong>${esc(p.allenamento || 'Riposo')}</strong></li>
-       <li><span>Cena</span><strong>${esc(p.cena || '—')}</strong></li></ul>`
-    : '<p class="tenue">Il piano della settimana arriva domenica sera.</p>');
+  const m = menuAttivo(), gm = m.giorni[ora.getDay()] || {};
+  const allen = (p && p.allenamento) || PROGRAMMA.schede[PROGRAMMA.settimana[ora.getDay()]].nome;
+  const cena = (p && p.cena) || (m.ricette[gm.cena] ? m.ricette[gm.cena].nome : '—');
+  h += card('Il piano di oggi', `<ul class="lista"><li><a href="#allenamenti">Allenamento</a><strong>${esc(allen)}</strong></li>
+       <li><a href="#dieta">Cena</a><strong>${esc(cena)}</strong></li></ul>`);
 
   const salute = (dati.salute || []).map((s) => ({ ...s, d: data(s.data) })).sort((a, b) => b.d - a.d);
   const sonno = salute.find((s) => s.sonno > 0);
@@ -199,20 +200,83 @@ document.addEventListener('click', (e) => {
   if (a) { e.preventDefault(); apertaScheda = a.dataset.apri; disegna(); const el = document.querySelector(`[data-id="${apertaScheda}"]`); if (el) el.scrollIntoView({ behavior: 'smooth' }); }
 });
 
+// ---------- dieta e spesa ----------
+const menuAttivo = () => (dati && dati.piano && dati.piano.menu) || MENU;
+const spesaAttiva = () => (dati && dati.piano && Array.isArray(dati.piano.spesa) && dati.piano.spesa) || MENU.spesa;
+const spuntaKey = () => 'spunte-' + (menuAttivo().settimana || '');
+let spunte = leggi(spuntaKey()) || {};
+let modificaReparti = false;
+
+function ricettaHtml(r, titolo) {
+  if (!r) return '';
+  return `<p><strong>${esc(r.nome)}</strong>${r.tempo ? ` <span class="tenue">· ${esc(r.tempo)}</span>` : ''}</p>
+    ${r.ingredienti && r.ingredienti.length ? `<p class="mini">Ingredienti</p><ul class="puntata">${r.ingredienti.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>` : ''}
+    ${r.passi && r.passi.length ? `<p class="mini">Come si fa</p><ol class="puntata">${r.passi.map((i) => `<li>${esc(i)}</li>`).join('')}</ol>` : ''}
+    ${r.nota ? `<p class="tenue">${esc(r.nota)}</p>` : ''}`;
+}
+
+function ordineReparti() {
+  const tutti = spesaAttiva().map((r) => r.reparto);
+  const salvato = (leggi('ordine-reparti') || []).filter((r) => tutti.includes(r));
+  return [...salvato, ...tutti.filter((r) => !salvato.includes(r))];
+}
+
 function vistaDieta() {
-  let h = '';
-  const p = dati.piano;
-  if (p && Array.isArray(p.giorni)) {
-    h += card('Menu della settimana', `<ul class="lista">${p.giorni.map((g) => { const d = data(g.data + 'T12:00:00');
-      return `<li><span>${GIORNI[d.getDay()]}</span><strong>${esc(g.cena || '—')}</strong></li>`; }).join('')}</ul>`);
+  const m = menuAttivo();
+  const ora = new Date();
+  const g = m.giorni[ora.getDay()] || {};
+  const r = m.ricette[g.cena];
+  let h = card('La cena di stasera', r ? ricettaHtml(r) : '<p class="tenue">Nessuna cena in programma.</p>');
+
+  const ordine = [1, 2, 3, 4, 5, 6, 0];
+  const nomePiatto = (k) => (m.ricette[k] ? m.ricette[k].nome : k || '—');
+  h += `<details class="card scheda"><summary><span><strong>Menu completo della settimana</strong></span><span class="freccia">›</span></summary>
+    <ul class="lista">${ordine.map((d) => { const x = m.giorni[d] || {};
+      return `<li class="${d === ora.getDay() ? 'oggi' : ''}" style="display:block"><strong>${GIORNI[d]}</strong><br>
+        <span class="tenue">Pranzo:</span> ${esc(nomePiatto(x.pranzo))}<br><span class="tenue">Cena:</span> ${esc(nomePiatto(x.cena))}
+        ${m.ricette[x.cena] && m.ricette[x.cena].passi.length > 1 ? `<details class="ricetta"><summary>Ricetta</summary>${ricettaHtml(m.ricette[x.cena])}</details>` : ''}
+        ${m.ricette[x.pranzo] ? `<details class="ricetta"><summary>Ricetta del pranzo</summary>${ricettaHtml(m.ricette[x.pranzo])}</details>` : ''}</li>`; }).join('')}</ul></details>`;
+
+  // lista spesa
+  const reparti = ordineReparti();
+  const perRep = Object.fromEntries(spesaAttiva().map((x) => [x.reparto, x.voci]));
+  const totali = spesaAttiva().reduce((t, x) => t + x.voci.length, 0);
+  const prese = Object.keys(spunte).length;
+  h += `<div class="testa-spesa"><h3 class="sezione">Lista spesa · ${prese}/${totali}</h3>
+    <button class="testo-btn" data-azione="reparti">${modificaReparti ? 'Fatto' : 'Ordina reparti'}</button></div>`;
+  if (modificaReparti) {
+    h += `<section class="card"><p class="tenue">Metti i reparti nell'ordine dei corridoi del tuo supermercato.</p><ul class="lista">${reparti.map((rep, i) => `<li><span>${esc(rep)}</span>
+      <span class="sposta"><button data-su="${i}" ${i === 0 ? 'disabled' : ''} aria-label="Sposta su">▲</button><button data-giu="${i}" ${i === reparti.length - 1 ? 'disabled' : ''} aria-label="Sposta giù">▼</button></span></li>`).join('')}</ul></section>`;
   } else {
-    h += card('Menu della settimana', '<p class="tenue">Arriva domenica sera con il nuovo piano.</p>');
+    reparti.forEach((rep) => {
+      const voci = perRep[rep] || [];
+      const fatte = voci.filter((v) => spunte[rep + '|' + v]).length;
+      h += `<section class="card"><h2>${esc(rep)} <span class="conta">${fatte}/${voci.length}</span></h2><ul class="spunte">${voci.map((v) => { const k = rep + '|' + v;
+        return `<li><label class="${spunte[k] ? 'preso' : ''}"><input type="checkbox" data-spunta="${esc(k)}" ${spunte[k] ? 'checked' : ''}><span>${esc(v)}</span></label></li>`; }).join('')}</ul></section>`;
+    });
+    if (prese) h += '<button class="testo-btn" data-azione="azzera">Togli tutte le spunte</button>';
   }
-  const l = dati.lista || [];
-  h += card('Lista spesa', l.length ? `<ul class="lista">${l.map((v) => `<li><span>${esc(v)}</span></li>`).join('')}</ul>
-    <p class="tenue">Le spunte dall'app arrivano nella prossima versione; per ora usa Promemoria.</p>` : '<p class="tenue">Nessuna lista.</p>');
   return h;
 }
+
+document.addEventListener('change', (e) => {
+  const c = e.target.closest('[data-spunta]');
+  if (!c) return;
+  if (c.checked) spunte[c.dataset.spunta] = 1; else delete spunte[c.dataset.spunta];
+  salva(spuntaKey(), spunte);
+  disegna();
+});
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-azione],[data-su],[data-giu]');
+  if (!b) return;
+  if (b.dataset.azione === 'reparti') { modificaReparti = !modificaReparti; }
+  else if (b.dataset.azione === 'azzera') { spunte = {}; salva(spuntaKey(), spunte); }
+  else {
+    const o = ordineReparti(); const i = Number(b.dataset.su ?? b.dataset.giu); const j = b.dataset.su != null ? i - 1 : i + 1;
+    [o[i], o[j]] = [o[j], o[i]]; salva('ordine-reparti', o);
+  }
+  const y = window.scrollY; disegna(); window.scrollTo(0, y);
+});
 
 function vistaFinanze() {
   const ora = new Date();
@@ -272,7 +336,7 @@ function disegna() {
   document.querySelectorAll('.barra a').forEach((a) => a.classList.toggle('attivo', a.dataset.v === sez));
   let h = stato ? `<p class="${stato.startsWith('Errore') ? 'errore' : 'tenue'}">${esc(stato)}</p>` : '';
   if (v === 'impostazioni') h += vistaImpostazioni();
-  else if (!dati && v !== 'allenamenti') h += '<p class="tenue">Carico i dati…</p>';
+  else if (!dati && v !== 'allenamenti' && v !== 'dieta') h += '<p class="tenue">Carico i dati…</p>';
   else h += VISTE[v].fn();
   $('#vista').innerHTML = h;
   const f = $('#form-config');
