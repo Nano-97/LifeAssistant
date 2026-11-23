@@ -4,15 +4,32 @@ const MENU = {
   settimana: '2026-11-23',
   // 1 = lunedì ... 0 = domenica
   giorni: {
-    1: { pranzo: 'Mensa', cena: 'salmone' },
-    2: { pranzo: 'Mensa', cena: 'frittata' },
-    3: { pranzo: 'Mensa', cena: 'zuppa' },
-    4: { pranzo: 'Mensa', cena: 'merluzzo' },
-    5: { pranzo: 'Mensa', cena: 'libero' },
-    6: { pranzo: 'pasta-broccoli', cena: 'burger' },
-    0: { pranzo: 'risotto', cena: 'piadina' }
+    1: { colazione: 'col-yogurt', pranzo: 'Mensa', cena: 'salmone' },
+    2: { colazione: 'col-uova', pranzo: 'Mensa', cena: 'frittata' },
+    3: { colazione: 'col-porridge', pranzo: 'Mensa', cena: 'zuppa' },
+    4: { colazione: 'col-yogurt', pranzo: 'Mensa', cena: 'merluzzo' },
+    5: { colazione: 'col-uova', pranzo: 'Mensa', cena: 'libero' },
+    6: { colazione: 'col-porridge', pranzo: 'pasta-broccoli', cena: 'burger' },
+    0: { colazione: 'col-yogurt', pranzo: 'risotto', cena: 'piadina' }
   },
+  // 1-2 al giorno, anche da portare al lavoro.
+  spuntini: ['Un frutto e una manciata di mandorle', 'Yogurt greco', 'Pane integrale con hummus'],
   ricette: {
+    'col-yogurt': {
+      nome: 'Yogurt greco con avena, frutta e noci', tempo: '3 min',
+      ingredienti: ['170 g di yogurt greco', '3 cucchiai di fiocchi d\'avena', '1 frutto a pezzi (banana o mela)', 'Una manciata di noci'],
+      passi: ['Metti tutto in una ciotola e mescola.']
+    },
+    'col-uova': {
+      nome: 'Pane integrale con uova strapazzate e un frutto', tempo: '8 min',
+      ingredienti: ['2 uova', '2 fette di pane integrale', '1 frutto', 'Sale, un filo d\'olio'],
+      passi: ['Tosta il pane.', 'Strapazza le uova in padella a fuoco basso per 2-3 minuti, sala.', 'Servi sul pane, con il frutto a parte.']
+    },
+    'col-porridge': {
+      nome: 'Porridge d\'avena col latte, banana e burro d\'arachidi', tempo: '6 min',
+      ingredienti: ['50 g di fiocchi d\'avena', '250 ml di latte', '1 banana', '1 cucchiaio di burro d\'arachidi'],
+      passi: ['Cuoci avena e latte a fuoco medio per 4-5 minuti, mescolando.', 'Aggiungi la banana a rondelle e il burro d\'arachidi.']
+    },
     salmone: {
       nome: 'Salmone al forno, patate e zucchine', tempo: '25 min',
       ingredienti: ['1 trancio di salmone (150 g)', '150 g di patate', '1 zucchina', 'Olio, sale, limone, rosmarino'],
