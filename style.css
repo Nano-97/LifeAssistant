@@ -74,3 +74,9 @@ details.ricetta > summary { color: var(--accento); cursor: pointer; font-size: .
 .sposta { display: flex; gap: 6px; }
 .sposta button { width: 40px; height: 36px; border-radius: 10px; border: 1px solid var(--bordo); background: var(--bg); color: var(--testo); }
 .sposta button:disabled { opacity: .3; }
+.azioni { display: flex; gap: 8px; }
+a.icona { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; position: relative; font-size: 1.05rem; }
+#badge { position: absolute; top: -2px; right: -2px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: #dc2626; color: #fff; font-size: .7rem; font-weight: 700; line-height: 18px; text-align: center; }
+.avviso-riga { display: flex; gap: 12px; color: var(--testo); text-decoration: none; width: 100%; }
+.avviso-icona { font-size: 1.3rem; width: 28px; text-align: center; }
+.lista li.nuovo { font-weight: 600; }

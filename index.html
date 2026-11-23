@@ -15,7 +15,11 @@
 <body>
   <header class="top">
     <h1 id="titolo">Oggi</h1>
-    <button id="aggiorna" class="icona" aria-label="Aggiorna">↻</button>
+    <div class="azioni">
+      <a id="chat" class="icona" href="https://claude.ai/code/project/chan_019v4UFQdwuFMVpTXbY73BG8" target="_blank" rel="noopener" aria-label="Chiedi a Claude">💬</a>
+      <a id="campanella" class="icona" href="#avvisi" aria-label="Avvisi">🔔<span id="badge" hidden></span></a>
+      <button id="aggiorna" class="icona" aria-label="Aggiorna">↻</button>
+    </div>
   </header>
   <main id="vista" aria-live="polite"></main>
   <nav class="barra">

@@ -65,7 +65,8 @@ const VISTE = {
   dieta: { titolo: 'Dieta e spesa', fn: vistaDieta },
   finanze: { titolo: 'Finanze', fn: vistaFinanze },
   altro: { titolo: 'Altro', fn: vistaAltro },
-  impostazioni: { titolo: 'Impostazioni', fn: vistaImpostazioni }
+  impostazioni: { titolo: 'Impostazioni', fn: vistaImpostazioni },
+  avvisi: { titolo: 'Avvisi', fn: vistaAvvisi }
 };
 
 function vistaOggi() {
@@ -298,6 +299,50 @@ function vistaFinanze() {
   return h;
 }
 
+// ---------- avvisi in app ----------
+// Generati dai dati: promemoria allenamento, spese registrate, piano nuovo della domenica.
+function avvisi() {
+  const ora = new Date();
+  const out = [];
+  const idOggi = PROGRAMMA.settimana[ora.getDay()];
+  const s = PROGRAMMA.schede[idOggi];
+  if (s && s.esercizi.length) {
+    const fatte = Object.keys(fatti).filter((k) => k.startsWith(idOggi + '.')).length;
+    const tot = s.esercizi.reduce((t, e) => t + (e.serie || s.giri || 1), 0);
+    if (fatte < tot) out.push({ id: 'all-' + giorno(ora), quando: new Date(giorno(ora) + 'T08:00:00'), tipo: '🏃',
+      testo: fatte ? `${s.nome}: ${fatte} serie su ${tot}, finisci quando puoi.` : `Oggi tocca ${s.nome} (${s.durata}).`, link: '#allenamenti' });
+  }
+  const da3 = new Date(ora.getTime() - 3 * 864e5);
+  (dati && dati.pagamenti || []).map((x) => ({ ...x, d: data(x.data) })).filter((x) => x.d >= da3)
+    .forEach((x) => out.push({ id: 'pag-' + x.data + x.importo, quando: x.d, tipo: '€',
+      testo: `Spesa registrata: ${euro(x.importo)} da ${x.esercente || '—'}${x.categoria === 'Da classificare' ? ' (da classificare)' : ''}.`, link: '#finanze' }));
+  const p = dati && dati.piano;
+  if (p && p.settimana) out.push({ id: 'piano-' + p.settimana, quando: new Date(p.settimana + 'T00:00:00'), tipo: '📋',
+    testo: 'Nuovo piano della settimana: menu, lista spesa e allenamenti aggiornati.', link: '#dieta' });
+  const scad = (dati && dati.casa || []).filter((c) => c.prossima_scadenza).map((c) => ({ ...c, d: data(c.prossima_scadenza) }))
+    .filter((c) => c.d >= new Date(giorno(ora)) && c.d - ora < 7 * 864e5);
+  scad.forEach((c) => out.push({ id: 'casa-' + c.voce + c.prossima_scadenza, quando: c.d, tipo: '🏠', testo: `${c.voce} scade il ${breve(c.d)}.`, link: '#altro' }));
+  return out.sort((a, b) => b.quando - a.quando);
+}
+
+function aggiornaBadge() {
+  const letti = leggi('avvisi-letti') || {};
+  const n = avvisi().filter((a) => !letti[a.id]).length;
+  const b = $('#badge');
+  if (b) { b.hidden = !n; b.textContent = n > 9 ? '9+' : n; }
+}
+
+function vistaAvvisi() {
+  const lista = avvisi();
+  const letti = leggi('avvisi-letti') || {};
+  const h = lista.length ? `<section class="card"><ul class="lista">${lista.map((a) => `<li class="${letti[a.id] ? '' : 'nuovo'}"><a class="avviso-riga" href="${a.link}">
+      <span class="avviso-icona">${a.tipo}</span><span>${esc(a.testo)}<br><span class="tenue">${breve(a.quando)}</span></span></a></li>`).join('')}</ul></section>`
+    : card('Avvisi', '<p class="tenue">Niente di nuovo.</p>');
+  lista.forEach((a) => { letti[a.id] = 1; });
+  salva('avvisi-letti', letti);
+  return h + `<p class="tenue">Per gli avvisi sul telefono anche ad app chiusa usa i Comandi rapidi: te li spiego in chat.</p>`;
+}
+
 function vistaAltro() {
   const salute = (dati.salute || []).map((s) => ({ ...s, d: data(s.data) })).sort((a, b) => b.d - a.d);
   const ultimi = salute.slice(0, 14);
@@ -339,6 +384,7 @@ function disegna() {
   else if (!dati && v !== 'allenamenti' && v !== 'dieta') h += '<p class="tenue">Carico i dati…</p>';
   else h += VISTE[v].fn();
   $('#vista').innerHTML = h;
+  aggiornaBadge();
   const f = $('#form-config');
   if (f) f.addEventListener('submit', (e) => {
     e.preventDefault();
