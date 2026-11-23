@@ -1,4 +1,4 @@
-// Endpoint del Foglio Hub (versione 5): riceve dati dai Comandi rapidi e da Health Auto Export
+// Endpoint del Foglio Hub (versione 6): riceve dati dai Comandi rapidi e da Health Auto Export
 // e li scrive nella scheda giusta. Incolla tutto in Estensioni > Apps Script, al posto del codice precedente.
 
 // Quale scheda riceve ogni "tipo" inviato dai Comandi rapidi.
@@ -72,6 +72,10 @@ function aggiungiRiga(ss, tipo, dati) {
     const v = dati[chiave(h)];
     return v === undefined || v === null ? '' : v;
   }));
+  if (tipo === 'pagamento') {
+    notifica('Spesa registrata', euro(dati.importo) + ' da ' + (dati.esercente || '—') +
+      (dati.categoria === 'Da classificare' ? ' (da classificare)' : ' · ' + dati.categoria), 'finanze');
+  }
   return { ok: true, scheda: nomeScheda };
 }
 
@@ -337,6 +341,95 @@ function pianoSettimana() {
   if (!ultimo) return null;
   try { return JSON.parse(ultimo.getBlob().getDataAsString()); } catch (err) { return null; }
 }
+
+// ---------- Notifiche push (app ntfy) ----------
+// Script property NTFY_TOPIC = nome segreto del canale (lo stesso a cui sei iscritto nell'app ntfy).
+// Lancia UNA volta installaNotifiche() dall'editor per attivare i promemoria a orario.
+const APP_URL = 'https://nano-97.github.io/LifeAssistant/';
+const ALLENAMENTO_DEL_GIORNO = { 1: 'Seduta A: spinta, core e gambe (50 min)', 2: 'Corsa facile (20-30 min)', 3: 'Seduta B: tirata e arrampicata (50 min)', 5: 'Seduta C: circuito dinamico (45 min)' };
+
+function notifica(titolo, testo, sezione) {
+  const topic = PropertiesService.getScriptProperties().getProperty('NTFY_TOPIC');
+  if (!topic) return;
+  try {
+    UrlFetchApp.fetch('https://ntfy.sh/', {
+      method: 'post', contentType: 'application/json', muteHttpExceptions: true,
+      payload: JSON.stringify({ topic: topic, title: titolo, message: testo, click: APP_URL + (sezione ? '#' + sezione : ''), tags: ['assistente'] })
+    });
+  } catch (err) { /* una notifica persa non deve bloccare il salvataggio */ }
+}
+
+function installaNotifiche() {
+  ScriptApp.getProjectTriggers().filter(function (t) { return /^promemoria/.test(t.getHandlerFunction()); })
+    .forEach(function (t) { ScriptApp.deleteTrigger(t); });
+  ScriptApp.newTrigger('promemoriaAllenamento').timeBased().everyDays(1).atHour(18).nearMinute(0).create();
+  ScriptApp.newTrigger('promemoriaPeso').timeBased().onWeekDay(ScriptApp.WeekDay.MONDAY).atHour(7).nearMinute(15).create();
+  ScriptApp.newTrigger('promemoriaPiano').timeBased().onWeekDay(ScriptApp.WeekDay.SUNDAY).atHour(20).nearMinute(30).create();
+  ScriptApp.newTrigger('promemoriaCasa').timeBased().everyDays(1).atHour(9).nearMinute(0).create();
+  notifica('Notifiche attive', "Da ora ricevi qui i promemoria dell'Assistente.", '');
+}
+
+// 18:00: allenamento del giorno (dal piano su Drive se c'è, altrimenti dalla settimana tipo).
+function promemoriaAllenamento() {
+  const oggi = new Date();
+  const g = Utilities.formatDate(oggi, Session.getScriptTimeZone(), 'yyyy-MM-dd');
+  const p = pianoSettimana();
+  const delPiano = p && Array.isArray(p.giorni) ? (p.giorni.filter(function (x) { return x.data === g; })[0] || {}).allenamento : null;
+  const testo = delPiano || ALLENAMENTO_DEL_GIORNO[oggi.getDay()];
+  if (!testo || /riposo|libero/i.test(testo)) return;
+  // Se oggi c'è già un allenamento registrato, niente promemoria.
+  const sh = SpreadsheetApp.getActive().getSheetByName('Allenamenti');
+  if (sh.getLastRow() > 1) {
+    const fatto = sh.getRange(2, 1, sh.getLastRow() - 1, 1).getValues().some(function (r) {
+      return r[0] instanceof Date && Utilities.formatDate(r[0], Session.getScriptTimeZone(), 'yyyy-MM-dd') === g;
+    });
+    if (fatto) return;
+  }
+  notifica('Allenamento di oggi', testo, 'allenamenti');
+}
+
+// Lunedì mattina: pesata settimanale, se non c'è già un peso negli ultimi 6 giorni.
+function promemoriaPeso() {
+  const sh = SpreadsheetApp.getActive().getSheetByName('Salute');
+  const h = intestazioniDi(sh).map(chiave);
+  const iPeso = h.indexOf('peso');
+  const limite = new Date(Date.now() - 6 * 864e5);
+  if (sh.getLastRow() > 1 && iPeso >= 0) {
+    const recente = sh.getRange(2, 1, sh.getLastRow() - 1, h.length).getValues()
+      .some(function (r) { return r[0] instanceof Date && r[0] >= limite && Number(r[iPeso]) > 0; });
+    if (recente) return;
+  }
+  notifica('Pesata del lunedì', 'Appena sveglio, dopo il bagno e prima di mangiare: inserisci il peso in Oggi.', 'oggi');
+}
+
+// Domenica sera: avvisa se Claude ha preparato il piano nuovo.
+function promemoriaPiano() {
+  const files = DriveApp.getFilesByName('Piano settimana');
+  const da = new Date(Date.now() - 864e5);
+  while (files.hasNext()) {
+    if (files.next().getDateCreated() >= da) {
+      notifica('Piano nuovo pronto', 'Menu, lista spesa e allenamenti della settimana sono aggiornati. Ricordati Importa spesa.', 'dieta');
+      return;
+    }
+  }
+}
+
+// Ogni mattina: scadenze di casa tra 3 giorni.
+function promemoriaCasa() {
+  const sh = SpreadsheetApp.getActive().getSheetByName('Casa');
+  if (!sh || sh.getLastRow() < 2) return;
+  const h = intestazioniDi(sh).map(chiave);
+  const iVoce = h.indexOf('voce'), iData = h.indexOf('prossima_scadenza'), iImp = h.indexOf('importo_stimato');
+  const tz = Session.getScriptTimeZone();
+  const tra3 = Utilities.formatDate(new Date(Date.now() + 3 * 864e5), tz, 'yyyy-MM-dd');
+  sh.getRange(2, 1, sh.getLastRow() - 1, h.length).getValues().forEach(function (r) {
+    if (r[iData] instanceof Date && Utilities.formatDate(r[iData], tz, 'yyyy-MM-dd') === tra3) {
+      notifica('Scadenza tra 3 giorni', r[iVoce] + (r[iImp] ? ' · circa ' + euro(r[iImp]) : ''), 'altro');
+    }
+  });
+}
+
+function euro(n) { return (Number(n) || 0).toFixed(2).replace('.', ',') + ' €'; }
 
 // ---------- Utilità ----------
 
