@@ -1,6 +1,6 @@
 // Service worker: tiene in cache i file dell'app, così si apre anche senza rete.
 // I dati non passano di qui: l'app salva l'ultima copia in localStorage.
-const VERSIONE = 'assistente-v11';
+const VERSIONE = 'assistente-v12';
 const FILE = ['./', 'index.html', 'style.css', 'app.js', 'schede.js', 'menu.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-180.png'];
 
 self.addEventListener('install', (e) => {
