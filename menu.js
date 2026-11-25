@@ -39,7 +39,7 @@ const MENU = {
     },
     zuppa: {
       nome: 'Pasta e lenticchie rosse con carote, in una pentola sola', tempo: '20 min',
-      ingredienti: ['1/2 cipolla, 1 carota e un pezzo di sedano', '80 g di lenticchie rosse', 'Circa 700 ml di acqua o brodo', '80 g di pasta integrale', '1 cucchiaio di grana', 'Olio', 'Pane integrale (a scelta)'],
+      ingredienti: ['1/2 cipolla, 1 carota e un pezzo di sedano', '80 g di lenticchie rosse', 'Circa 700 ml di acqua o brodo', '60 g di pasta integrale (giorno di riposo)', '1 cucchiaio di grana', 'Olio', 'Pane integrale (a scelta)'],
       passi: ['Trita le verdure e soffriggile 3-4 minuti in pentola con un filo d\'olio.', 'Aggiungi le lenticchie e l\'acqua (o brodo) e cuoci 10 minuti.', 'Butta la pasta nella stessa pentola e cuoci per il tempo della confezione.', 'Finisci con il grana e un filo d\'olio a crudo.']
     },
     merluzzo: {
