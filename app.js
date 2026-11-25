@@ -25,6 +25,7 @@ const num = (n, dec = 0) => (Number(n) || 0).toLocaleString('it-IT', { minimumFr
 const ore = (h) => { const m = Math.round(h * 60); return Math.floor(m / 60) + 'h ' + String(m % 60).padStart(2, '0'); };
 const passoTesto = (minKm) => { const m = Math.floor(minKm); const s = Math.round((minKm - m) * 60); return s === 60 ? (m + 1) + ':00' : m + ':' + String(s).padStart(2, '0'); };
 const inizioSettimana = (d) => { const x = new Date(d); x.setHours(0, 0, 0, 0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
+const idDelGiorno = (d) => (PROGRAMMA.eccezioni && PROGRAMMA.eccezioni[giorno(d)]) || PROGRAMMA.settimana[d.getDay()];
 const conPasso = (a) => a.passo && /^(corsa|camminata)/i.test(a.tipo || '');
 const card = (titolo, corpo) => `<section class="card"><h2>${esc(titolo)}</h2>${corpo}</section>`;
 
@@ -127,7 +128,7 @@ function vistaOggi() {
 
   const p = pianoDi(ora);
   const m = menuAttivo(), gm = m.giorni[ora.getDay()] || {};
-  const allen = (p && p.allenamento) || PROGRAMMA.schede[PROGRAMMA.settimana[ora.getDay()]].nome;
+  const allen = (p && p.allenamento) || PROGRAMMA.schede[idDelGiorno(ora)].nome;
   const cena = (p && p.cena) || (m.ricette[gm.cena] ? m.ricette[gm.cena].nome : '—');
   h += card('Il piano di oggi', `<ul class="lista"><li><a href="#allenamenti">Allenamento</a><strong>${esc(allen)}</strong></li>
        ${m.ricette[gm.colazione] ? `<li><a href="#dieta">Colazione</a><strong>${esc(m.ricette[gm.colazione].nome)}</strong></li>` : ''}
@@ -222,7 +223,7 @@ function schedaHtml(id, aperta) {
 
 function vistaAllenamenti() {
   const ora = new Date();
-  const oggiId = PROGRAMMA.settimana[ora.getDay()];
+  const oggiId = idDelGiorno(ora);
   let h = '';
   h += `<p class="tenue">Oggi, ${GIORNI[ora.getDay()]}</p>`;
   h += schedaHtml(oggiId, apertaScheda ? apertaScheda === oggiId : true);
@@ -233,7 +234,7 @@ function vistaAllenamenti() {
     .forEach((id) => { h += schedaHtml(id, apertaScheda === id); });
 
   const ordine = [1, 2, 3, 4, 5, 6, 0];
-  h += card('La settimana', `<ul class="lista">${ordine.map((g) => { const s = PROGRAMMA.schede[PROGRAMMA.settimana[g]];
+  h += card('La settimana', `<ul class="lista">${ordine.map((g) => { const lun = inizioSettimana(ora); const dd = new Date(lun.getTime() + ((g + 6) % 7) * 864e5 + 12 * 36e5); const s = PROGRAMMA.schede[idDelGiorno(dd)];
     return `<li${g === ora.getDay() ? ' class="oggi"' : ''}><span>${GIORNI[g]}</span><span>${esc(s.nome.replace(/^Seduta /, ''))}</span></li>`; }).join('')}</ul>`);
   h += card('Progressione', `<ul class="lista">${PROGRAMMA.progressione.map(([a, b]) => `<li><span><strong>${esc(a)}</strong>: ${esc(b)}</span></li>`).join('')}</ul>
     <p class="tenue">${esc(PROGRAMMA.nota)}</p>`);
@@ -366,7 +367,7 @@ function vistaFinanze() {
 function avvisi() {
   const ora = new Date();
   const out = [];
-  const idOggi = PROGRAMMA.settimana[ora.getDay()];
+  const idOggi = idDelGiorno(ora);
   const s = PROGRAMMA.schede[idOggi];
   if (s && s.esercizi.length) {
     const fatte = Object.keys(fatti).filter((k) => k.startsWith(idOggi + '.')).length;

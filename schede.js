@@ -12,6 +12,11 @@ const PROGRAMMA = {
     6: 'LIBERO',
     0: 'RIPOSO_DOM'
   },
+  // Spostamenti su date precise (yyyy-mm-dd), hanno la precedenza sulla settimana tipo.
+  eccezioni: {
+    '2026-11-25': 'RIPOSO', // seduta B spostata a giovedì
+    '2026-11-26': 'B'
+  },
   schede: {
     RISCALDAMENTO: {
       nome: 'Riscaldamento spalla', dove: 'Ogni seduta', durata: '10 min',
