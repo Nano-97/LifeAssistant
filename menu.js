@@ -38,10 +38,9 @@ const MENU = {
       passi: ['Salta gli spinaci in padella con un filo d\'olio per 3-4 minuti, sala.', 'Sbatti uova, ricotta e grana, unisci gli spinaci.', 'Versa in padella antiaderente, coperchio, fuoco basso 6-7 minuti; gira con un piatto e altri 2 minuti.', 'Servi con pane e insalata.']
     },
     zuppa: {
-      nome: 'Zuppa di lenticchie rosse e carote, crostini', tempo: '5 min (preparata domenica)',
-      ingredienti: ['La porzione di zuppa preparata domenica', 'Pane integrale per i crostini', 'Olio a crudo'],
-      passi: ['Scalda la zuppa in pentola o al microonde.', 'Tosta il pane e servi con un filo d\'olio a crudo.'],
-      nota: 'Domenica: soffriggi cipolla, carota e sedano, aggiungi 250 g di lenticchie rosse e 1 l di brodo, cuoci 20 minuti e frulla in parte. Due porzioni: una per mercoledì, una in freezer.'
+      nome: 'Pasta e lenticchie rosse con carote, in una pentola sola', tempo: '20 min',
+      ingredienti: ['80 g di lenticchie rosse', '80 g di pasta integrale', '1/2 cipolla', '1 carota', 'Sedano', 'Grana', 'Olio'],
+      passi: ['Trita cipolla, carota e sedano e soffriggili 3 minuti in pentola con un filo d\'olio.', 'Aggiungi le lenticchie sciacquate e circa 600 ml di acqua calda salata, cuoci 8 minuti.', 'Butta la pasta direttamente in pentola e cuoci per il tempo indicato, aggiungendo acqua se si asciuga troppo.', 'Servi con grana e un filo d\'olio a crudo.']
     },
     merluzzo: {
       nome: 'Merluzzo con pomodorini e olive, cous cous, broccoli', tempo: '20 min',
