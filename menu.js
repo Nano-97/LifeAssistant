@@ -67,7 +67,8 @@ MENU_SETTIMANE.push({
     piadina: {
       nome: 'Piadina con bresaola, rucola e grana, yogurt con frutta', tempo: '5 min',
       ingredienti: ['1 piadina', '80 g di bresaola', 'Rucola', 'Scaglie di grana', 'Yogurt greco e frutta'],
-      passi: ['Scalda la piadina in padella 1 minuto per lato.', 'Farcisci con bresaola, rucola e grana.', 'Dessert: yogurt greco con frutta.']
+      passi: ['Scalda la piadina in padella 1 minuto per lato.', 'Farcisci con bresaola, rucola e grana.', 'Dessert: yogurt greco con frutta.'],
+      nota: "Stasera prepara anche la zuppa di lenticchie rosse e cavolo nero per mercoledì. Zuppa (2 porzioni, 40 min): 160 g di lenticchie rosse secche, 150 g di cavolo nero, 1 carota, 1/2 cipolla, 1 costa di sedano, 1 spicchio d'aglio, 1 l d'acqua o brodo vegetale, 2 cucchiai d'olio, sale. 1) Trita fini cipolla, carota e sedano; al cavolo nero togli la costola, taglialo a strisce di 1 cm e lavalo. 2) Scalda 1 cucchiaio d'olio con l'aglio schiacciato e fai appassire il trito 5 minuti a fuoco medio. 3) Aggiungi le lenticchie sciacquate, il cavolo nero e il litro d'acqua. 4) Al bollore abbassa, coperchio socchiuso, 20-25 minuti mescolando ogni tanto (mezzo bicchiere d'acqua se si asciuga). 5) Sala, togli l'aglio, dividi in 2: una in frigo per mercoledì (4 giorni), una in freezer."
     }
   },
   // Reparti nell'ordine predefinito: l'ordine dei corridoi lo sistemi dall'app.
@@ -105,48 +106,15 @@ MENU_SETTIMANE.push({
     c5: { nome: 'Pane integrale con ricotta e miele, mandarini', tempo: '4 min', ingredienti: ['2 fette di pane integrale', '80 g di ricotta', '1 cucchiaino di miele', '2 mandarini'], passi: ['Tosta il pane, spalma la ricotta e un filo di miele.'] },
     c6: { nome: "Porridge d'avena col latte, mela e noci", tempo: '6 min', ingredienti: ["50 g di fiocchi d'avena", '250 ml di latte', '1 mela a pezzetti', 'Una manciata di noci'], passi: ['Cuoci avena, latte e mela 5 minuti, mescolando.', 'Completa con le noci.'] },
     c7: { nome: '2 uova strapazzate, pane integrale, kiwi', tempo: '8 min', ingredienti: ['2 uova', '2 fette di pane integrale', '1 kiwi'], passi: ['Strapazza le uova a fuoco basso 2-3 minuti e servi con il pane tostato.'] },
-    pollo: {
-      nome: 'Pollo al limone, patate al forno, insalata di finocchi e arance', tempo: '30 min',
-      ingredienti: ['150 g di petto di pollo', '250 g di patate', '1 finocchio', '1 arancia', '1 limone', 'Olio, sale, rosmarino'],
-      passi: ['Forno a 200 °C: patate a cubetti con olio, sale e rosmarino per 25 minuti.', 'Pollo a fettine in padella con un filo d\'olio, 3-4 minuti per lato; sfuma con il succo di mezzo limone.', 'Insalata: finocchio a fette sottili e arancia a spicchi, olio e sale.']
-    },
-    'frittata-porri': {
-      nome: 'Frittata di porri e grana, pane integrale, radicchio', tempo: '20 min',
-      ingredienti: ['3 uova', '1 porro', '1 cucchiaio di grana', 'Pane integrale', '1/2 cespo di radicchio'],
-      passi: ['Affetta il porro e stufalo in padella con un filo d\'olio e un goccio d\'acqua per 8 minuti.', 'Sbatti uova e grana, versa sui porri, coperchio e fuoco basso 6-7 minuti; gira e altri 2 minuti.', 'Servi con pane e radicchio condito.']
-    },
-    'zuppa-cavolonero': {
-      nome: 'Zuppa di lenticchie rosse e cavolo nero, crostini', tempo: '5 min (preparata domenica)',
-      ingredienti: ['La porzione di zuppa preparata domenica', 'Pane integrale per i crostini', 'Olio a crudo'],
-      passi: ['Scalda la zuppa.', 'Tosta il pane e servi con un filo d\'olio a crudo.'],
-      nota: 'Domenica: soffriggi cipolla, carota e sedano, aggiungi il cavolo nero a striscioline, 250 g di lenticchie rosse e 1 l di brodo; 25 minuti. Due porzioni.'
-    },
-    'merluzzo-carciofi': {
-      nome: 'Merluzzo al forno, carciofi in padella, cous cous', tempo: '25 min',
-      ingredienti: ['200 g di merluzzo', '3 carciofi (o 1 busta surgelati)', '70 g di cous cous', 'Limone, aglio, prezzemolo, olio'],
-      passi: ['Forno a 200 °C: merluzzo con olio, sale e limone per 12-15 minuti.', 'Carciofi a spicchi in padella con aglio e olio, un po\' d\'acqua, coperchio 12 minuti.', 'Cous cous: stessa quantità di acqua bollente salata, copri 5 minuti e sgrana.']
-    },
-    libero: { nome: 'Pasto libero (pizza, uscita)', tempo: '', ingredienti: [], passi: ['Goditela, senza sensi di colpa.'] },
-    'pasta-cavolfiore': {
-      nome: 'Pasta integrale con cavolfiore, acciughe e pangrattato', tempo: '20 min',
-      ingredienti: ['90 g di pasta integrale', '250 g di cavolfiore', '3 filetti di acciuga', '2 cucchiai di pangrattato', 'Aglio, olio, peperoncino'],
-      passi: ['Cuoci il cavolfiore a cimette nell\'acqua della pasta 6 minuti, poi butta la pasta.', 'In padella: olio, aglio e acciughe finché si sciolgono; tosta a parte il pangrattato.', 'Scola, salta in padella e finisci con il pangrattato.']
-    },
-    polpette: {
-      nome: 'Polpette di manzo al sugo, spinaci saltati, pane integrale', tempo: '30 min',
-      ingredienti: ['200 g di macinato di manzo', '1 uovo', '1 cucchiaio di grana', '300 ml di passata', '300 g di spinaci', 'Aglio, olio, pane integrale'],
-      passi: ['Impasta macinato, uovo, grana e sale; forma 8 polpette.', 'Scalda la passata con un filo d\'olio, aggiungi le polpette e cuoci coperto 15-20 minuti.', 'Spinaci in padella con aglio e olio 4 minuti.']
-    },
-    'risotto-radicchio': {
-      nome: 'Risotto al radicchio e grana', tempo: '25 min',
-      ingredienti: ['80 g di riso', '1/2 cespo di radicchio', '1/2 cipolla', 'Brodo vegetale caldo', '2 cucchiai di grana'],
-      passi: ['Soffriggi la cipolla, aggiungi il radicchio a striscioline per 3 minuti.', 'Tosta il riso 1 minuto, poi brodo un mestolo alla volta per 16-18 minuti.', 'Fuori dal fuoco manteca con il grana.']
-    },
-    'piadina-cotto': {
-      nome: 'Piadina con prosciutto cotto, rucola e ricotta', tempo: '5 min',
-      ingredienti: ['1 piadina', '80 g di prosciutto cotto', 'Rucola', '2 cucchiai di ricotta'],
-      passi: ['Scalda la piadina 1 minuto per lato.', 'Spalma la ricotta e farcisci con cotto e rucola.']
-    }
+    "pollo": {"nome": "Pollo al limone, patate al forno, insalata di finocchi e arance", "tempo": "40 min", "ingredienti": ["180 g di petto di pollo", "250 g di patate", "1 finocchio", "1 arancia", "1/2 limone", "Rosmarino (se ce l'hai)", "1 cucchiaio e mezzo d'olio (15 g)", "Sale e pepe"], "passi": ["Accendi il forno a 200 °C ventilato. Taglia le patate a cubi di 2 cm, condiscile con 1 cucchiaino d'olio, sale e rosmarino, stendile su una teglia con carta forno e cuoci 35 minuti, girandole a metà.", "Taglia il pollo a fette spesse 1 cm. Mettilo in un piatto con il succo del mezzo limone, un po' di scorza grattugiata, 1 cucchiaino d'olio e pepe, per 10 minuti.", "Quando mancano 10 minuti alle patate, scalda bene una padella antiaderente e cuoci il pollo 3-4 minuti per lato. Nell'ultimo minuto versa la marinata e 2 cucchiai d'acqua: si forma una salsina. Sala alla fine.", "Affetta sottile il finocchio. Pela l'arancia togliendo anche la pellicina bianca e tagliala a spicchi. Condisci con 1 cucchiaino d'olio, sale e pepe."]},
+    "frittata-porri": {"nome": "Frittata di porri e grana, pane integrale, radicchio", "tempo": "20 min", "ingredienti": ["3 uova", "1 porro (circa 150 g)", "20 g di grana grattugiato", "1 cucchiaio d'olio (10 g)", "1/2 cespo di radicchio", "60 g di pane integrale", "Sale, pepe, aceto"], "passi": ["Togli al porro la parte verde più dura e la radice, taglialo a rondelle di mezzo centimetro e lavalo bene sotto l'acqua.", "In una padella antiaderente da 20 cm scalda 1 cucchiaino d'olio, aggiungi il porro e 3 cucchiai d'acqua, copri e cuoci a fuoco medio 8 minuti finché è morbido.", "Sbatti le uova con il grana, un pizzico di sale e pepe. Versale sui porri, abbassa il fuoco e cuoci con il coperchio 6-7 minuti, finché la superficie è quasi rappresa.", "Girala aiutandoti con il coperchio o un piatto e cuoci ancora 2 minuti.", "Taglia il radicchio a striscioline e condiscilo con il resto dell'olio, sale e un goccio d'aceto. Servi con il pane."]},
+    "zuppa-cavolonero": {"nome": "Zuppa di lenticchie rosse e cavolo nero, crostini", "tempo": "5 min (preparata domenica 29)", "ingredienti": ["1 porzione di zuppa preparata domenica", "2 fette di pane integrale", "1 filo d'olio a crudo"], "passi": ["Scalda la zuppa in un pentolino a fuoco medio per 5 minuti, mescolando. Se è troppo densa aggiungi 2-3 cucchiai d'acqua.", "Tosta il pane e aggiungi un filo d'olio a crudo."], "nota": "Preparazione di domenica (2 porzioni, 40 min): 160 g di lenticchie rosse secche, 150 g di cavolo nero, 1 carota, 1/2 cipolla, 1 costa di sedano, 1 spicchio d'aglio, 1 l d'acqua o brodo vegetale, 2 cucchiai d'olio, sale. 1) Trita fini cipolla, carota e sedano; al cavolo nero togli la costola, taglialo a strisce di 1 cm e lavalo. 2) Scalda 1 cucchiaio d'olio con l'aglio schiacciato e fai appassire il trito 5 minuti a fuoco medio. 3) Aggiungi le lenticchie sciacquate, il cavolo nero e il litro d'acqua. 4) Al bollore abbassa, coperchio socchiuso, 20-25 minuti mescolando ogni tanto (mezzo bicchiere d'acqua se si asciuga). 5) Sala, togli l'aglio, dividi in 2: una in frigo per mercoledì (4 giorni), una in freezer."},
+    "merluzzo-carciofi": {"nome": "Merluzzo al forno, carciofi in padella, cous cous", "tempo": "35 min", "ingredienti": ["200 g di filetti di merluzzo", "3 carciofi (o 200 g surgelati)", "70 g di cous cous", "1/2 limone", "1 spicchio d'aglio", "1 cucchiaio e mezzo d'olio (15 g)", "Sale"], "passi": ["Accendi il forno a 200 °C.", "Carciofi freschi: togli le foglie esterne dure finché arrivi a quelle chiare, taglia le punte e pela il gambo. Dividili in 8 spicchi, togli la peluria interna e mettili in acqua con il succo di mezzo limone, così non anneriscono.", "In padella scalda 1 cucchiaino d'olio con l'aglio, aggiungi i carciofi scolati, 100 ml d'acqua e un pizzico di sale. Copri e cuoci a fuoco medio 15 minuti (10 se surgelati), finché una forchetta entra facilmente.", "Metti il merluzzo su una teglia con carta forno, condiscilo con 1 cucchiaino d'olio, sale e un po' di scorza di limone. Inforna per 12-15 minuti.", "Cous cous: mettilo in una ciotola con 1 cucchiaino d'olio e un pizzico di sale, versa sopra 100 ml d'acqua bollente, copri con un piatto per 5 minuti e sgranalo con una forchetta."], "nota": "Se il merluzzo è surgelato, mettilo in frigo a scongelare la sera prima."},
+    "libero": {"nome": "Pasto libero (pizza, uscita)", "tempo": "", "ingredienti": [], "passi": ["Goditela, senza sensi di colpa."]},
+    "pasta-cavolfiore": {"nome": "Pasta integrale con cavolfiore, acciughe e pangrattato", "tempo": "25 min", "ingredienti": ["90 g di pasta integrale corta", "250 g di cavolfiore", "4 filetti di acciughe sott'olio", "1 spicchio d'aglio", "20 g di pangrattato", "1 cucchiaio e mezzo d'olio (15 g)", "Peperoncino (se ti piace)"], "passi": ["Metti a bollire 2 litri d'acqua con poco sale, perché le acciughe sono già salate.", "Dividi il cavolfiore in cimette piccole, circa 2 cm.", "Tosta il pangrattato in padella con 1 cucchiaino d'olio, a fuoco medio, mescolando, per 2-3 minuti finché è dorato. Mettilo da parte.", "Butta il cavolfiore nell'acqua che bolle e cuocilo 7 minuti. Poi aggiungi la pasta nella stessa pentola e cuoci per il tempo della confezione.", "Nella padella scalda 1 cucchiaio d'olio con l'aglio schiacciato e le acciughe, a fuoco basso per 2 minuti finché si sciolgono. Togli l'aglio.", "Scola pasta e cavolfiore tenendo un mestolo d'acqua di cottura. Saltali in padella 1-2 minuti con un po' di quell'acqua, schiacciando qualche cimetta per fare una crema.", "Impiatta e cospargi con il pangrattato."]},
+    "polpette": {"nome": "Polpette di manzo al sugo, spinaci saltati, pane integrale", "tempo": "35 min", "ingredienti": ["200 g di macinato di manzo", "1 uovo", "20 g di pangrattato", "10 g di grana", "250 ml di passata di pomodoro", "2 spicchi d'aglio", "300 g di spinaci", "1 cucchiaio e mezzo d'olio (15 g)", "60 g di pane integrale", "Origano, sale e pepe"], "passi": ["In una ciotola impasta con le mani macinato, uovo, pangrattato, grana, un pizzico di sale e pepe. Forma 8 polpette grandi come una noce.", "In una padella con i bordi alti scalda 1 cucchiaio d'olio con 1 spicchio d'aglio, aggiungi la passata, 100 ml d'acqua, un pizzico di sale e l'origano.", "Quando il sugo bolle metti dentro le polpette, copri e cuoci a fuoco basso 20 minuti, girandole a metà cottura.", "Spinaci freschi: lavali e cuocili in padella con 1 cucchiaino d'olio e l'altro spicchio d'aglio per 4-5 minuti, girando. Se surgelati, cuocili ancora congelati con 2 cucchiai d'acqua per 8 minuti.", "Sala gli spinaci alla fine e servi tutto con il pane per il sugo."]},
+    "risotto-radicchio": {"nome": "Risotto al radicchio e grana", "tempo": "30 min", "ingredienti": ["90 g di riso da risotto (Carnaroli o Arborio)", "1/2 cespo di radicchio (circa 120 g)", "1/2 cipolla", "600 ml di brodo vegetale", "20 g di grana grattugiato", "1 cucchiaio d'olio (10 g)", "5 g di burro (se ce l'hai)"], "passi": ["Scalda il brodo in un pentolino e tienilo caldo a fuoco basso.", "Taglia il radicchio a striscioline e trita fine la cipolla.", "In una pentola scalda l'olio e fai appassire la cipolla a fuoco medio per 3 minuti.", "Aggiungi il riso e tostalo 2 minuti mescolando, poi metà del radicchio.", "Versa il brodo un mestolo alla volta, aggiungendone altro solo quando il precedente è assorbito, e mescola spesso. Ci vogliono 16-18 minuti.", "Due minuti prima della fine aggiungi il resto del radicchio.", "Togli dal fuoco, aggiungi grana e burro, mescola e lascia riposare 1 minuto con il coperchio."]},
+    "piadina-cotto": {"nome": "Piadina con prosciutto cotto, rucola e ricotta", "tempo": "5 min", "ingredienti": ["1 piadina", "80 g di prosciutto cotto", "50 g di ricotta", "Rucola (circa 20 g)"], "passi": ["Scalda la piadina in una padella asciutta 1 minuto per lato.", "Spalma la ricotta su metà piadina, aggiungi prosciutto e rucola, chiudi a mezzaluna e servi subito."]}
   },
   spesa: [
     { reparto: 'Frutta e verdura', voci: ['Kiwi (6)', 'Cachi (4)', 'Pere (4)', 'Mele (3)', 'Arance (4)', 'Mandarini (1 kg)', 'Limoni (2)', 'Cavolo nero (1 mazzo)', 'Cavolfiore (1 piccolo)', 'Finocchi (2)', 'Carciofi (3, o 1 busta surgelati)', 'Porri (2)', 'Radicchio (2 cespi)', 'Spinaci (300 g)', 'Rucola (1 busta)', 'Insalata mista (1 busta)', 'Patate (500 g)', 'Carote (4)', 'Cipolle e sedano (se finiti)'] },
@@ -157,7 +125,7 @@ MENU_SETTIMANE.push({
     { reparto: 'Pasta, riso e cereali', voci: ["Avena (se finita)", 'Pasta integrale (se finita)', 'Cous cous (se finito)', 'Riso da risotto (se finito)'] },
     { reparto: 'Legumi e conserve', voci: ['Passata di pomodoro (1)', 'Hummus', 'Acciughe (se finite)'] },
     { reparto: 'Colazione e frutta secca', voci: ["Burro d'arachidi (se finito)", 'Mandorle e noci (se finite)', 'Miele (se finito)'] },
-    { reparto: 'Olio, condimenti e brodo', voci: ['Pangrattato (se finito)'] },
+    { reparto: 'Olio, condimenti e brodo', voci: ['Pangrattato (se finito)', 'Aglio (se finito)', 'Origano (se finito)', 'Aceto (se finito)', 'Brodo vegetale, granulare o dado (se finito)'] },
     { reparto: 'Surgelati', voci: [] }
   ]
 });
