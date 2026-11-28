@@ -257,10 +257,17 @@ document.addEventListener('click', (e) => {
 });
 
 // ---------- dieta e spesa ----------
-const menuAttivo = () => (dati && dati.piano && dati.piano.menu) || MENU;
-const spesaAttiva = () => (dati && dati.piano && Array.isArray(dati.piano.spesa) && dati.piano.spesa) || MENU.spesa;
-const spuntaKey = () => 'spunte-' + (menuAttivo().settimana || '');
+const candidatiMenu = () => {
+  const p = dati && dati.piano;
+  const extra = p && p.menu ? [{ ...p.menu, settimana: p.menu.settimana || p.settimana, spesa: Array.isArray(p.spesa) ? p.spesa : p.menu.spesa }] : [];
+  return [...MENU_SETTIMANE, ...extra];
+};
+const menuAttivo = () => settimanaPer(new Date(), candidatiMenu());
+const menuSpesa = () => { const d = new Date(); if (d.getDay() === 6 || d.getDay() === 0) d.setDate(d.getDate() + 3); return settimanaPer(d, candidatiMenu()); };
+const spesaAttiva = () => (menuSpesa().spesa || []).filter((r) => r.voci && r.voci.length);
+const spuntaKey = () => 'spunte-' + (menuSpesa().settimana || '');
 let spunte = leggi(spuntaKey()) || {};
+let spunteKey = spuntaKey();
 let modificaReparti = false;
 
 function ricettaHtml(r, titolo) {
@@ -302,11 +309,13 @@ function vistaDieta() {
         ${m.ricette[x.pranzo] ? `<details class="ricetta"><summary>Ricetta del pranzo</summary>${ricettaHtml(m.ricette[x.pranzo])}</details>` : ''}</li>`; }).join('')}</ul></details>`;
 
   // lista spesa
+  if (spunteKey !== spuntaKey()) { spunteKey = spuntaKey(); spunte = leggi(spunteKey) || {}; }
+  const ms = menuSpesa();
   const reparti = ordineReparti();
   const perRep = Object.fromEntries(spesaAttiva().map((x) => [x.reparto, x.voci]));
   const totali = spesaAttiva().reduce((t, x) => t + x.voci.length, 0);
   const prese = Object.keys(spunte).length;
-  h += `<div class="testa-spesa"><h3 class="sezione">Lista spesa · ${prese}/${totali}</h3>
+  h += `<div class="testa-spesa"><h3 class="sezione">Lista spesa${ms.settimana !== m.settimana ? ' dal ' + breve(new Date(ms.settimana + 'T12:00:00')) : ''} · ${prese}/${totali}</h3>
     <button class="testo-btn" data-azione="reparti">${modificaReparti ? 'Fatto' : 'Ordina reparti'}</button></div>`;
   if (modificaReparti) {
     h += `<section class="card"><p class="tenue">Metti i reparti nell'ordine dei corridoi del tuo supermercato.</p><ul class="lista">${reparti.map((rep, i) => `<li><span>${esc(rep)}</span>

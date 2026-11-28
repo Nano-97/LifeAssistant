@@ -1,6 +1,7 @@
 // Menu della settimana, ricette e lista spesa per reparto (dal piano settimanale).
 // Se il foglio manda un piano più recente (dati.piano.menu / dati.piano.spesa), l'app usa quello.
-const MENU = {
+const MENU_SETTIMANE = [];
+MENU_SETTIMANE.push({
   settimana: '2026-11-23',
   // 1 = lunedì ... 0 = domenica
   giorni: {
@@ -82,4 +83,89 @@ const MENU = {
     { reparto: 'Olio, condimenti e brodo', voci: ['Pangrattato', 'Olio extravergine (se finito)', 'Brodo vegetale (se finito)'] },
     { reparto: 'Surgelati', voci: ['Filetti di merluzzo (200 g)', 'Spinaci (300 g)'] }
   ]
-};
+});
+
+// Settimana 30/11 - 6/12: frutta e verdura di stagione.
+MENU_SETTIMANE.push({
+  settimana: '2026-11-30',
+  giorni: {
+    1: { colazione: 'c1', pranzo: 'Mensa', spuntino: 'Cachi e mandorle', cena: 'pollo' },
+    2: { colazione: 'c2', pranzo: 'Mensa', spuntino: 'Yogurt greco e miele', cena: 'frittata-porri' },
+    3: { colazione: 'c3', pranzo: 'Mensa', spuntino: 'Pera e pane integrale', cena: 'zuppa-cavolonero' },
+    4: { colazione: 'c4', pranzo: 'Mensa', spuntino: 'Pane integrale con hummus', cena: 'merluzzo-carciofi' },
+    5: { colazione: 'c5', pranzo: 'Mensa', spuntino: 'Cachi e noci', cena: 'libero' },
+    6: { colazione: 'c6', pranzo: 'pasta-cavolfiore', spuntino: 'Yogurt greco e kiwi', cena: 'polpette' },
+    0: { colazione: 'c7', pranzo: 'risotto-radicchio', spuntino: 'Mela e mandorle', cena: 'piadina-cotto' }
+  },
+  ricette: {
+    c1: { nome: 'Yogurt greco con avena, kiwi e noci', tempo: '3 min', ingredienti: ['170 g di yogurt greco', "3 cucchiai di fiocchi d'avena", '1 kiwi', 'Una manciata di noci'], passi: ['Metti tutto in una ciotola e mescola.'] },
+    c2: { nome: "Pane integrale, 2 uova strapazzate, spremuta d'arancia", tempo: '10 min', ingredienti: ['2 uova', '2 fette di pane integrale', '2 arance'], passi: ['Spremi le arance.', 'Strapazza le uova a fuoco basso 2-3 minuti e servi con il pane tostato.'] },
+    c3: { nome: "Porridge d'avena col latte, pera e burro d'arachidi", tempo: '6 min', ingredienti: ["50 g di fiocchi d'avena", '250 ml di latte', '1 pera', "1 cucchiaio di burro d'arachidi"], passi: ['Cuoci avena e latte 4-5 minuti, mescolando.', "Aggiungi la pera a pezzetti e il burro d'arachidi."] },
+    c4: { nome: 'Yogurt greco con avena, cachi e mandorle', tempo: '3 min', ingredienti: ['170 g di yogurt greco', "3 cucchiai di fiocchi d'avena", '1 cachi', 'Una manciata di mandorle'], passi: ['Metti tutto in una ciotola e mescola.'] },
+    c5: { nome: 'Pane integrale con ricotta e miele, mandarini', tempo: '4 min', ingredienti: ['2 fette di pane integrale', '80 g di ricotta', '1 cucchiaino di miele', '2 mandarini'], passi: ['Tosta il pane, spalma la ricotta e un filo di miele.'] },
+    c6: { nome: "Porridge d'avena col latte, mela e noci", tempo: '6 min', ingredienti: ["50 g di fiocchi d'avena", '250 ml di latte', '1 mela a pezzetti', 'Una manciata di noci'], passi: ['Cuoci avena, latte e mela 5 minuti, mescolando.', 'Completa con le noci.'] },
+    c7: { nome: '2 uova strapazzate, pane integrale, kiwi', tempo: '8 min', ingredienti: ['2 uova', '2 fette di pane integrale', '1 kiwi'], passi: ['Strapazza le uova a fuoco basso 2-3 minuti e servi con il pane tostato.'] },
+    pollo: {
+      nome: 'Pollo al limone, patate al forno, insalata di finocchi e arance', tempo: '30 min',
+      ingredienti: ['150 g di petto di pollo', '250 g di patate', '1 finocchio', '1 arancia', '1 limone', 'Olio, sale, rosmarino'],
+      passi: ['Forno a 200 °C: patate a cubetti con olio, sale e rosmarino per 25 minuti.', 'Pollo a fettine in padella con un filo d\'olio, 3-4 minuti per lato; sfuma con il succo di mezzo limone.', 'Insalata: finocchio a fette sottili e arancia a spicchi, olio e sale.']
+    },
+    'frittata-porri': {
+      nome: 'Frittata di porri e grana, pane integrale, radicchio', tempo: '20 min',
+      ingredienti: ['3 uova', '1 porro', '1 cucchiaio di grana', 'Pane integrale', '1/2 cespo di radicchio'],
+      passi: ['Affetta il porro e stufalo in padella con un filo d\'olio e un goccio d\'acqua per 8 minuti.', 'Sbatti uova e grana, versa sui porri, coperchio e fuoco basso 6-7 minuti; gira e altri 2 minuti.', 'Servi con pane e radicchio condito.']
+    },
+    'zuppa-cavolonero': {
+      nome: 'Zuppa di lenticchie rosse e cavolo nero, crostini', tempo: '5 min (preparata domenica)',
+      ingredienti: ['La porzione di zuppa preparata domenica', 'Pane integrale per i crostini', 'Olio a crudo'],
+      passi: ['Scalda la zuppa.', 'Tosta il pane e servi con un filo d\'olio a crudo.'],
+      nota: 'Domenica: soffriggi cipolla, carota e sedano, aggiungi il cavolo nero a striscioline, 250 g di lenticchie rosse e 1 l di brodo; 25 minuti. Due porzioni.'
+    },
+    'merluzzo-carciofi': {
+      nome: 'Merluzzo al forno, carciofi in padella, cous cous', tempo: '25 min',
+      ingredienti: ['200 g di merluzzo', '3 carciofi (o 1 busta surgelati)', '70 g di cous cous', 'Limone, aglio, prezzemolo, olio'],
+      passi: ['Forno a 200 °C: merluzzo con olio, sale e limone per 12-15 minuti.', 'Carciofi a spicchi in padella con aglio e olio, un po\' d\'acqua, coperchio 12 minuti.', 'Cous cous: stessa quantità di acqua bollente salata, copri 5 minuti e sgrana.']
+    },
+    libero: { nome: 'Pasto libero (pizza, uscita)', tempo: '', ingredienti: [], passi: ['Goditela, senza sensi di colpa.'] },
+    'pasta-cavolfiore': {
+      nome: 'Pasta integrale con cavolfiore, acciughe e pangrattato', tempo: '20 min',
+      ingredienti: ['90 g di pasta integrale', '250 g di cavolfiore', '3 filetti di acciuga', '2 cucchiai di pangrattato', 'Aglio, olio, peperoncino'],
+      passi: ['Cuoci il cavolfiore a cimette nell\'acqua della pasta 6 minuti, poi butta la pasta.', 'In padella: olio, aglio e acciughe finché si sciolgono; tosta a parte il pangrattato.', 'Scola, salta in padella e finisci con il pangrattato.']
+    },
+    polpette: {
+      nome: 'Polpette di manzo al sugo, spinaci saltati, pane integrale', tempo: '30 min',
+      ingredienti: ['200 g di macinato di manzo', '1 uovo', '1 cucchiaio di grana', '300 ml di passata', '300 g di spinaci', 'Aglio, olio, pane integrale'],
+      passi: ['Impasta macinato, uovo, grana e sale; forma 8 polpette.', 'Scalda la passata con un filo d\'olio, aggiungi le polpette e cuoci coperto 15-20 minuti.', 'Spinaci in padella con aglio e olio 4 minuti.']
+    },
+    'risotto-radicchio': {
+      nome: 'Risotto al radicchio e grana', tempo: '25 min',
+      ingredienti: ['80 g di riso', '1/2 cespo di radicchio', '1/2 cipolla', 'Brodo vegetale caldo', '2 cucchiai di grana'],
+      passi: ['Soffriggi la cipolla, aggiungi il radicchio a striscioline per 3 minuti.', 'Tosta il riso 1 minuto, poi brodo un mestolo alla volta per 16-18 minuti.', 'Fuori dal fuoco manteca con il grana.']
+    },
+    'piadina-cotto': {
+      nome: 'Piadina con prosciutto cotto, rucola e ricotta', tempo: '5 min',
+      ingredienti: ['1 piadina', '80 g di prosciutto cotto', 'Rucola', '2 cucchiai di ricotta'],
+      passi: ['Scalda la piadina 1 minuto per lato.', 'Spalma la ricotta e farcisci con cotto e rucola.']
+    }
+  },
+  spesa: [
+    { reparto: 'Frutta e verdura', voci: ['Kiwi (6)', 'Cachi (4)', 'Pere (4)', 'Mele (3)', 'Arance (4)', 'Mandarini (1 kg)', 'Limoni (2)', 'Cavolo nero (1 mazzo)', 'Cavolfiore (1 piccolo)', 'Finocchi (2)', 'Carciofi (3, o 1 busta surgelati)', 'Porri (2)', 'Radicchio (2 cespi)', 'Spinaci (300 g)', 'Rucola (1 busta)', 'Insalata mista (1 busta)', 'Patate (500 g)', 'Carote (4)', 'Cipolle e sedano (se finiti)'] },
+    { reparto: 'Pane e forno', voci: ['Pane integrale', 'Piadine (1 confezione)'] },
+    { reparto: 'Carne e salumi', voci: ['Petto di pollo (200 g)', 'Macinato di manzo (200 g)', 'Prosciutto cotto (80 g)'] },
+    { reparto: 'Pesce', voci: ['Merluzzo (200 g, anche surgelato)'] },
+    { reparto: 'Latticini e uova', voci: ['Uova (10)', 'Yogurt greco bianco (1 kg)', 'Latte (1 l)', 'Ricotta (250 g)', 'Grana (se finito)'] },
+    { reparto: 'Pasta, riso e cereali', voci: ["Avena (se finita)", 'Pasta integrale (se finita)', 'Cous cous (se finito)', 'Riso da risotto (se finito)'] },
+    { reparto: 'Legumi e conserve', voci: ['Passata di pomodoro (1)', 'Hummus', 'Acciughe (se finite)'] },
+    { reparto: 'Colazione e frutta secca', voci: ["Burro d'arachidi (se finito)", 'Mandorle e noci (se finite)', 'Miele (se finito)'] },
+    { reparto: 'Olio, condimenti e brodo', voci: ['Pangrattato (se finito)'] },
+    { reparto: 'Surgelati', voci: [] }
+  ]
+});
+
+// Sceglie la settimana: per il menu quella che contiene la data, per la spesa da sabato quella successiva.
+function settimanaPer(data, candidati) {
+  const g = new Date(data); g.setHours(12, 0, 0, 0); g.setDate(g.getDate() - ((g.getDay() + 6) % 7));
+  const lun = g.getFullYear() + '-' + String(g.getMonth() + 1).padStart(2, '0') + '-' + String(g.getDate()).padStart(2, '0');
+  const ok = candidati.filter((m) => m && m.settimana && m.settimana <= lun).sort((a, b) => (a.settimana < b.settimana ? 1 : -1));
+  return ok[0] || candidati[0];
+}
